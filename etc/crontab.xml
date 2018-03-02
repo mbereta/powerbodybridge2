@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="import">
+        <job name="fullImport" instance="Powerbody\Bridge\Cron\Import" method="run">
+            <schedule>00 00 * * *</schedule>
+        </job>
+        <job name="priceImport" instance="Powerbody\Bridge\Cron\PriceData" method="run">
+            <schedule>*/30 * * * *</schedule>
+        </job>
+        <job name="stockImport" instance="Powerbody\Bridge\Cron\StockData" method="run">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="orderCreate" instance="Powerbody\Bridge\Cron\Export" method="run">
+            <schedule>*/10 * * * *</schedule>
+        </job>
+        <job name="orderUpdate" instance="Powerbody\Bridge\Cron\UpdateOrders" method="run">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+    </group>
+</config>

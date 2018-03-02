@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Powerbody_Bridge::bridge"
+             title="Powerbody"
+             module="Powerbody_Bridge"
+             sortOrder="60"
+             resource="Powerbody_Bridge::bridge" />
+ 
+        <add id="Powerbody_Bridge::import_categories"
+             title="Import Categories"
+             module="Powerbody_Bridge"
+             sortOrder="0"
+             action="bridge/import_category/"
+             parent="Powerbody_Bridge::bridge"
+             resource="Powerbody_Bridge::import_categories" />
+
+        <add id="Powerbody_Bridge::import_manufacturers"
+             title="Import Manufacturers"
+             module="Powerbody_Bridge"
+             sortOrder="0"
+             action="bridge/import_manufacturer/"
+             parent="Powerbody_Bridge::bridge"
+             resource="Powerbody_Bridge::import_manufacturers" />
+    </menu>
+</config>

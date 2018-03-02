@@ -1,0 +1,19 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Powerbody_Bridge::bridge" title="Bridge" translate="title" sortOrder="100">
+                        <resource id="Powerbody_Bridge::import_categories" title="Import categories" translate="title" sortOrder="10" />
+                        <resource id="Powerbody_Bridge::import_manufacturers" title="Import manufacturers" translate="title" sortOrder="10" />
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Powerbody_Bridge::config" title="Powerbody bridge config" sortOrder="50" />
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

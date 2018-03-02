@@ -1,0 +1,51 @@
+<form action="<?php echo $this->getSaveFormAction(); ?>" method="post">
+    <?php echo $this->getBlockHtml('formkey'); ?>
+    <table class="data-grid">
+        <thead>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content"><?php echo __('Select'); ?></span>  
+            </th>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content"><?php echo __('Name'); ?></span>  
+            </th>
+            <th class="data-grid-th">
+                <span><?php echo __('Created at'); ?></span>
+            </th>
+            <th class="data-grid-th">
+                <span><?php echo __('Updated at'); ?></span>
+            </th>
+        </thead>
+        <tbody>
+        <?php foreach ($this->getManufacturerCollection() as $manufacturerModel): ?>
+            <?php $manufacturerId = $manufacturerModel->getId(); ?>
+            <?php $isSelected = boolval($manufacturerModel->getData('is_selected')); ?>
+            <tr class="data-row">
+                <td class="data-grid-checkbox-cell">
+                    <label class="data-grid-checkbox-cell-inner">
+                        <input 
+                            class="admin__control-checkbox" 
+                            type="checkbox" 
+                            name="manufacturer[<?php echo $manufacturerId; ?>]"
+                            value="<?php echo $manufacturerId; ?>"
+                            id="manufacturer_<?php echo $manufacturerId; ?>"
+                            <?php if (true === $isSelected): ?>
+                                checked="checked" 
+                            <?php endif; ?>
+                        />
+                        <label for="manufacturer_<?php echo $manufacturerId; ?>"></label>
+                    </label>
+                </td>
+                <td>
+                    <div class="data-grid-cell-content"><?php echo $manufacturerModel->getData('name'); ?></div>
+                </td>
+                <td>
+                    <div class="data-grid-cell-content"><?php echo $manufacturerModel->getData('created_at'); ?></div>
+                </td>
+                <td>
+                    <div class="data-grid-cell-content"><?php echo $manufacturerModel->getData('updated_at'); ?></div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</form>

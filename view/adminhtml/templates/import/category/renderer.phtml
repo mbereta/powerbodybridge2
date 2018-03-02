@@ -1,0 +1,38 @@
+<?php
+/* @var $this \Powerbody\Bridge\Block\Adminhtml\Import\Category\Renderer */
+$importedCategory = $this->getData('imported_category');
+$path = $importedCategory['path'];
+$pathElements = explode('/', $path);
+$pathElementsCount = count($pathElements);
+?>
+    <tr class="data-row">
+        <td class="data-grid-checkbox-cell">
+            <label class="data-grid-checkbox-cell-inner">
+                <input type="checkbox"
+                       class="admin__control-checkbox"
+                       data-first="<?php echo intval($importedCategory['first'] === true); ?>"
+                       data-base="<?php echo $importedCategory['base_category_id']; ?>"
+                       data-parent="<?php echo $importedCategory['parent_id']; ?>"
+                       name="category[<?php echo $importedCategory['id']; ?>]"
+                       value="<?php echo $importedCategory['id']; ?>"
+                    <?php if (true === boolval($importedCategory['is_selected'])): ?> checked="checked" <?php endif; ?>/>
+                <label for="category_<?php echo $importedCategory['id']; ?>"></label>
+            </label>
+        </td>
+        <td class="a-left">
+            <?php for ($pe = 0; $pe < $pathElementsCount - 2; $pe++): ?>
+                &emsp;
+                &emsp;
+            <?php endfor; ?>
+            <?php echo $importedCategory['name']; ?>
+        </td>
+        <td class="a-left"><?php echo $importedCategory['created_at']; ?></td>
+        <td class="a-left"><?php echo $importedCategory['updated_at']; ?></td>
+    </tr>
+<?php
+if (true === isset($importedCategory['children']) && false === empty($importedCategory['children'])):
+    foreach ($importedCategory['children'] as $child) :
+        echo $this->renderNew($child);
+    endforeach;
+endif; ?>
+

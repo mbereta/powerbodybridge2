@@ -1,0 +1,18 @@
+{
+    "name": "advox/powerbodybridge2",
+    "description": "Magento2 Powerbody Bridge module",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0",
+    "require": {
+        "php": "^7.1.12"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Powerbody\\Bridge": ""
+        }
+    }
+}

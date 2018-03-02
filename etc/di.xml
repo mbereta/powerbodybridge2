@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Powerbody\Bridge\Api\Client">
+        <arguments>
+            <argument name="clientFactory" xsi:type="object">Powerbody\Bridge\Api\Connection\Factory</argument>
+            <argument name="jsonDecoder" xsi:type="object">Magento\Framework\Json\Decoder</argument>
+            <argument name="jsonEncoder" xsi:type="object">Magento\Framework\Json\Encoder</argument>
+            <argument name="configurationReader" xsi:type="object">Powerbody\Bridge\System\Configuration\ConfigurationReader</argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Controller\Adminhtml\Import\Category\Save">
+        <arguments>
+            <argument name="context" xsi:type="object">Magento\Backend\App\Action\Context</argument>
+            <argument name="pageFactory" xsi:type="object">Magento\Framework\View\Result\PageFactory</argument>
+            <argument name="importedCategoryService" xsi:type="object">Powerbody\Bridge\Service\Imported\ImportedCategory</argument>
+            <argument name="categoryCreator" xsi:type="object">Powerbody\Bridge\Service\CategoryCreator</argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Controller\Adminhtml\Import\Manufacturer\Save">
+        <arguments>
+            <argument name="context" xsi:type="object">Magento\Backend\App\Action\Context</argument>
+            <argument name="pageFactory" xsi:type="object">Magento\Framework\View\Result\PageFactory</argument>
+            <argument name="importedManufacturerService" xsi:type="object">Powerbody\Bridge\Service\Imported\ImportedManufacturer</argument>
+            <argument name="manufacturerCreator" xsi:type="object">Powerbody\Bridge\Service\ManufacturerCreator</argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Controller\Adminhtml\Import\Manufacturer\Index">
+        <arguments>
+            <argument name="context" xsi:type="object">Magento\Backend\App\Action\Context</argument>
+            <argument name="pageFactory" xsi:type="object">Magento\Framework\View\Result\PageFactory</argument>
+            <argument name="manufacturerDataImporter" xsi:type="object">Powerbody\Bridge\Service\Form\ManufacturerDataImporter</argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Controller\Adminhtml\Import\Category\Index">
+        <arguments>
+            <argument name="context" xsi:type="object">Magento\Backend\App\Action\Context</argument>
+            <argument name="pageFactory" xsi:type="object">Magento\Framework\View\Result\PageFactory</argument>
+            <argument name="categoryDataImporter" xsi:type="object">Powerbody\Bridge\Service\Form\CategoryDataImporter</argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Service\Import\Product\Configurable\ProductCreator">
+        <arguments>
+            <argument name="categoryIdTranslator" xsi:type="object">Powerbody\Bridge\Service\Import\CategoryIdTranslator</argument>
+            <argument name="manufacturerIdTranslator" xsi:type="object">Powerbody\Bridge\Service\Import\ManufacturerIdTranslator</argument>
+            <argument name="attributes" xsi:type="array">
+                <item name="1" xsi:type="string">powerbody_color</item>
+                <item name="2" xsi:type="string">powerbody_weight</item>
+                <item name="3" xsi:type="string">powerbody_flavour</item>
+                <item name="4" xsi:type="string">powerbody_size</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Cron\Import">
+        <arguments>
+            <argument name="tasks" xsi:type="array">
+                <item name="1" xsi:type="object">Powerbody\Bridge\Service\Import\Task\UpdateAttributes</item>
+                <item name="2" xsi:type="object">Powerbody\Bridge\Service\Import\Task\SimpleProduct</item>
+                <item name="3" xsi:type="object">Powerbody\Bridge\Service\Import\Task\ConfigurableProducts</item>
+                <item name="4" xsi:type="object">Powerbody\Bridge\Service\Import\Task\ImportIngredients</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Cron\Export">
+        <arguments>
+            <argument name="tasks" xsi:type="array">
+                <item name="1" xsi:type="object">Powerbody\Bridge\Service\Export\Task\ExportOrders</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Cron\UpdateOrders">
+        <arguments>
+            <argument name="tasks" xsi:type="array">
+                <item name="1" xsi:type="object">Powerbody\Bridge\Service\Import\Task\UpdateOrders</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Powerbody\Bridge\Service\Import\Product\SimpleProductUpdater">
+        <arguments>
+            <argument name="categoryIdTranslator" xsi:type="object">Powerbody\Bridge\Service\Import\CategoryIdTranslator</argument>
+            <argument name="manufacturerIdTranslator" xsi:type="object">Powerbody\Bridge\Service\Import\ManufacturerIdTranslator</argument>
+        </arguments>
+    </type>
+
+    <preference for="Powerbody\Bridge\Api\ClientInterface" type="Powerbody\Bridge\Api\Client"/>
+    <preference for="Powerbody\Bridge\Api\Connection\FactoryInterface" type="Powerbody\Bridge\Api\Connection\Factory"/>
+
+    <preference for="Magento\Framework\Json\DecoderInterface" type="Magento\Framework\Json\Decoder"/>
+    <preference for="Magento\Framework\Json\EncoderInterface" type="Magento\Framework\Json\Encoder"/>
+
+    <preference for="Powerbody\Bridge\System\Configuration\ConfigurationReaderInterface" type="Powerbody\Bridge\System\Configuration\ConfigurationReader"/>
+    <preference for="Powerbody\Bridge\Entity\Manufacturer\RepositoryInterface" type="Powerbody\Bridge\Entity\Manufacturer\Repository"/>
+    <preference for="Powerbody\Bridge\Model\ResourceModel\Imported\ManufacturerRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\Imported\ManufacturerRepository"/>
+    <preference for="Powerbody\Bridge\Entity\Category\RepositoryInterface" type="Powerbody\Bridge\Entity\Category\Repository"/>
+    <preference for="Powerbody\Bridge\Model\ResourceModel\Imported\CategoryRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\Imported\CategoryRepository"/>
+    <preference for="Powerbody\Bridge\Block\Adminhtml\Import\Category\RendererFactoryInterface" type="Powerbody\Bridge\Block\Adminhtml\Import\Category\RendererFactory"/>
+    <preference for="Psr\Log\LoggerInterface" type="Magento\Framework\Logger\Monolog"/>
+
+    <preference for="Powerbody\Bridge\Service\ManufacturerCreatorInterface" type="Powerbody\Bridge\Service\ManufacturerCreator"/>
+    <preference for="Powerbody\Bridge\Service\CategoryCreatorInterface" type="Powerbody\Bridge\Service\CategoryCreator"/>
+
+    <preference for="Powerbody\Bridge\Model\ResourceModel\CategoryRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\CategoryRepository"/>
+    <preference for="Powerbody\Bridge\Model\ResourceModel\ManufacturerRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\ManufacturerRepository"/>
+    <preference for="Powerbody\Bridge\Service\ImageDownloaderInterface" type="Powerbody\Bridge\Service\ImageDownloader"/>
+
+    <preference for="Powerbody\Bridge\Service\Import\ProductDataComparatorInterface" type="Powerbody\Bridge\Service\Import\ProductDataComparator"/>
+    <preference for="Powerbody\Bridge\Service\Import\Product\SimpleProductImporterInterface" type="Powerbody\Bridge\Service\Import\Product\SimpleProductImporter"/>
+    <preference for="Powerbody\Bridge\Service\Import\Product\SimpleProductUpdaterInterface" type="Powerbody\Bridge\Service\Import\Product\SimpleProductUpdater"/>
+    <preference for="Powerbody\Bridge\Service\ArrayUniquenessProviderInterface" type="Powerbody\Bridge\Service\ArrayUniquenessProvider"/>
+
+    <preference for="Powerbody\Bridge\Service\Import\Product\Configurable\ProductImporterInterface" type="Powerbody\Bridge\Service\Import\Product\Configurable\ProductImporter"/>
+    <preference for="Powerbody\Bridge\Service\Import\Product\Configurable\ProductCreatorInterface" type="Powerbody\Bridge\Service\Import\Product\Configurable\ProductCreator"/>
+
+    <preference for="Powerbody\Bridge\Entity\Order\RepositoryInterface" type="Powerbody\Bridge\Entity\Order\Repository"/>
+    <preference for="Powerbody\Bridge\Model\ResourceModel\Export\OrderEntryRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\Export\OrderEntryRepository"/>
+
+    <preference for="Powerbody\Bridge\Entity\Ingredient\RepositoryInterface" type="Powerbody\Bridge\Entity\Ingredient\Repository"/>
+    <preference for="Powerbody\Bridge\Service\Ingredient\LabelCreatorInterface" type="Powerbody\Bridge\Service\Ingredient\LabelCreator"/>
+
+    <preference for="Powerbody\Bridge\Service\Import\Product\PriceUpdaterInterface" type="Powerbody\Bridge\Service\Import\Product\PriceUpdater"/>
+    <preference for="Powerbody\Bridge\Service\Import\Product\StockUpdaterInterface" type="Powerbody\Bridge\Service\Import\Product\StockUpdater"/>
+    <preference for="Powerbody\Bridge\Entity\Product\PriceProductRepositoryInterface" type="Powerbody\Bridge\Entity\Product\PriceProductRepository"/>
+    <preference for="Powerbody\Bridge\Entity\Product\StockProductRepositoryInterface" type="Powerbody\Bridge\Entity\Product\StockProductRepository"/>
+
+    <preference for="Powerbody\Bridge\Model\ResourceModel\ProductRepositoryInterface" type="Powerbody\Bridge\Model\ResourceModel\ProductRepository"/>
+
+    <preference for="Powerbody\Bridge\Service\OrderServiceInterface" type="Powerbody\Bridge\Service\OrderService"/>
+    <preference for="Powerbody\Bridge\Service\ShipmentServiceInterface" type="Powerbody\Bridge\Service\ShipmentService"/>
+    <preference for="Powerbody\Bridge\Service\TrackServiceInterface" type="Powerbody\Bridge\Service\TrackService"/>
+
+    <preference for="Powerbody\Bridge\Service\Fixer\ConfigurableDescriptionInterface" type="Powerbody\Bridge\Service\Fixer\ConfigurableDescription"/>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="powerbodybridge_fix_descriptions" xsi:type="object">Powerbody\Bridge\Console\Command\FixDescriptionsCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>

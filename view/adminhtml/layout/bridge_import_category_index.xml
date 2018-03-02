@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Powerbody_Bridge::css/import.css"/>
+        <link src="Powerbody_Bridge::js/import.js"/>
+        <link src="Powerbody_Bridge::js/import/category.js"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Powerbody\Bridge\Block\Adminhtml\Import\Index" name="import_index" template="Powerbody_Bridge::import/index.phtml">
+                <arguments>
+                    <argument name="list_title" xsi:type="string">Import categories</argument>
+                </arguments>
+                <block class="Powerbody\Bridge\Block\Adminhtml\Import\Category" name="import_list" template="Powerbody_Bridge::import/category.phtml"/>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

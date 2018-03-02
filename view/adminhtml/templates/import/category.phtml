@@ -1,0 +1,27 @@
+<?php /* @var $this Powerbody\Bridge\Block\Adminhtml\Import\Category */ ?>
+<form action="<?php echo $this->getSaveFormAction(); ?>" method="post">
+    <?php echo $this->getBlockHtml('formkey'); ?>
+    <table class="data-grid">
+        <thead>
+            <tr>
+                <th class="data-grid-th">
+                    <span class="data-grid-cell-content"><?php echo __('Select'); ?></span>
+                </th>
+                <th class="data-grid-th">
+                    <span class="data-grid-cell-content"><?php echo __('Name'); ?></span>
+                </th>
+                <th class="data-grid-th">
+                    <span><?php echo __('Created at'); ?></span>
+                </th>
+                <th class="data-grid-th">
+                    <span><?php echo __('Updated at'); ?></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($this->getCategoryTree() as $node): ?>
+            <?php echo $this->renderNode($node)?>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</form>
