@@ -1,6 +1,6 @@
 {
     "name": "advox/powerbodybridge2",
-    "description": "Magento2 Powerbody Bridge module",
+    "description": "Magento 2 Powerbody Bridge module",
     "type": "library",
     "license": "MIT",
     "version": "1.0.0",
