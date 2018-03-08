@@ -5,7 +5,6 @@ namespace Powerbody\Bridge\Controller\Adminhtml\Import\Manufacturer;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Powerbody\Bridge\Service\Imported\ImportedEntityServiceInterface;
 use Powerbody\Bridge\Service\ManufacturerCreatorInterface;
@@ -58,15 +57,15 @@ class Save extends Action
         $this->resourceConnection = $resourceConnection;
         $this->dbConnection = $this->resourceConnection->getConnection();
         $this->logger = $logger;
+
         return parent::__construct($context);
     }
 
     /**
-     * @return ResponseInterface
+     * @return \Magento\Framework\App\ResponseInterface
      */
     public function execute()
     {
-
         try {
             $this->dbConnection->beginTransaction();
 
@@ -77,18 +76,19 @@ class Save extends Action
 
             $this->dbConnection->commit();
         } catch (\Exception $e) {
-            $this->logger->debug($e->getMessage(), [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'previous' => $e->getPrevious(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            $this->messageManager->addErrorMessage(__('Failed to save your preferences, please try again.'));
             $this->dbConnection->rollBack();
+            $this->logger->error($e->getMessage());
+            $this->messageManager->addErrorMessage(__('Failed to save your preferences, please try again.'));
         }
 
         return $this->_redirect('bridge/import_manufacturer/index');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Powerbody_Bridge::import_manufacturers');
     }
 }

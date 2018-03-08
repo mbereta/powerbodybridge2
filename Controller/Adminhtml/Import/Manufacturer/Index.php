@@ -41,20 +41,30 @@ class Index extends Action
 
     public function execute() : Page
     {
+        $this->_initGrid();
+
+        /* @var $resultPage $resultPage */
+        $resultPage = $this->pageFactory->create();
+        $resultPage->getConfig()->getTitle()->set(__('Import Manufacturers'));
+        
+        return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Powerbody_Bridge::import_manufacturers');
+    }
+
+    private function _initGrid()
+    {
         try {
             $this->manufacturerDataImporter->importFormData();
         } catch (\Exception $e) {
-            $this->logger->debug($e->getMessage(), [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'previous' => $e->getPrevious(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            $this->logger->error($e);
             $this->messageManager->addErrorMessage(__('Something went wrong while trying to synchronize manufacturers, data may be inconsistent.'));
         }
-
-        return $this->pageFactory->create();
     }
 }

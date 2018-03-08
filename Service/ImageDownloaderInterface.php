@@ -5,5 +5,5 @@ namespace Powerbody\Bridge\Service;
 
 interface ImageDownloaderInterface
 {
-    public function downloadImage(string $filePath, string $destinationPath) : bool;
+    public function downloadImage(string $filePath, string $destinationPath, string $fileName) : bool;
 }

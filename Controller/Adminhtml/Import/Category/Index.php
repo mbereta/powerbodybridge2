@@ -41,19 +41,30 @@ class Index extends Action
 
     public function execute() : Page
     {
+        $this->_initGrid();
+
+        /* @var $resultPage $resultPage */
+        $resultPage = $this->pageFactory->create();
+        $resultPage->getConfig()->getTitle()->set(__('Import Categories'));
+
+        return $resultPage;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Powerbody_Bridge::import_categories');
+    }
+
+    private function _initGrid()
+    {
         try {
             $this->categoryDataImporter->importFormData();
         } catch (\Exception $e) {
-            $this->logger->debug($e->getMessage(), [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'previous' => $e->getPrevious(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            $this->logger->error($e);
             $this->messageManager->addErrorMessage(__('Something went wrong while trying to synchronize categories, data may be inconsistent.'));
         }
-        return $this->pageFactory->create();
     }
 }

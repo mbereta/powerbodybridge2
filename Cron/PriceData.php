@@ -6,38 +6,48 @@ namespace Powerbody\Bridge\Cron;
 use Powerbody\Bridge\Entity\Product\PriceProductRepositoryInterface;
 use Powerbody\Bridge\Service\Import\Product\PriceUpdaterInterface;
 use Powerbody\Bridge\Model\ResourceModel\ProductRepositoryInterface;
+use Powerbody\Bridge\System\Configuration\ConfigurationReaderInterface;
 use \Psr\Log\LoggerInterface as Logger;
 
 class PriceData
 {
     private $priceProductRepository;
+
     private $priceUpdater;
+
     private $productRepository;
+
     private $logger;
+
+    private $configurationReader;
 
     public function __construct(
         PriceProductRepositoryInterface $priceProductRepository,
         PriceUpdaterInterface $priceUpdater,
         ProductRepositoryInterface $productRepository,
-        Logger $logger
+        Logger $logger,
+        ConfigurationReaderInterface $configurationReader
     ) {
         $this->priceProductRepository = $priceProductRepository;
         $this->priceUpdater = $priceUpdater;
         $this->productRepository = $productRepository;
         $this->logger = $logger;
+        $this->configurationReader = $configurationReader;
     }
 
     public function run()
     {
-        $this->logger->debug(__('Started price import:') . date('Y-m-d H:i:s', time()));
+        if (false === $this->configurationReader->getIsEnabled()) {
+            return $this;
+        }
 
         $productSkuArray = $this->productRepository->getImportedProductsSkuArray();
         $priceDataArray = $this->priceProductRepository->getProductPriceDataForSkuArray($productSkuArray);
 
-        if (false === empty($priceDataArray)) {
-            $this->priceUpdater->processImport($priceDataArray);
+        if (true === empty($priceDataArray)) {
+            return;
         }
 
-        $this->logger->debug(__('Ended price import:') . date('Y-m-d H:i:s', time()));
+        $this->priceUpdater->processImport($priceDataArray);
     }
 }

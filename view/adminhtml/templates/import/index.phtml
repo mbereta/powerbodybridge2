@@ -1,14 +1,5 @@
 <div class="fieldset-wrapper admin__collapsible-block-wrapper">
     <div class="fieldset-wrapper-title">
-        <?php if ($this->hasData('list_title')):?>
-            <div data-role="title">
-                <strong>
-                    <div class="content-header">
-                        <h3 class="icon-head head-categories"><?php echo __($this->getData('list_title')); ?></h3>
-                    </div>
-                </strong>
-            </div>
-        <?php endif?>
         <div data-role="content">
           <?php echo $this->getChildHtml('import_list'); ?>
         </div>

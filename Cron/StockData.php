@@ -6,6 +6,7 @@ namespace Powerbody\Bridge\Cron;
 use Powerbody\Bridge\Entity\Product\StockProductRepositoryInterface;
 use Powerbody\Bridge\Service\Import\Product\StockUpdaterInterface;
 use Powerbody\Bridge\Model\ResourceModel\ProductRepositoryInterface;
+use Powerbody\Bridge\System\Configuration\ConfigurationReaderInterface;
 use \Psr\Log\LoggerInterface as Logger;
 
 class StockData
@@ -18,21 +19,27 @@ class StockData
 
     private $logger;
 
+    private $configurationReader;
+
     public function __construct(
         StockProductRepositoryInterface $stockProductRepository,
         StockUpdaterInterface $stockUpdater,
         ProductRepositoryInterface $productRepository,
-        Logger $logger
+        Logger $logger,
+        ConfigurationReaderInterface $configurationReader
     ) {
         $this->stockProductRepository = $stockProductRepository;
         $this->stockUpdater = $stockUpdater;
         $this->productRepository = $productRepository;
         $this->logger = $logger;
+        $this->configurationReader = $configurationReader;
     }
 
     public function run()
     {
-        $this->logger->debug(__('Started stock import:') . date('Y-m-d H:i:s', time()));
+        if (false === $this->configurationReader->getIsEnabled()) {
+            return $this;
+        }
 
         $productSkuArray = $this->productRepository->getImportedProductsSkuArray();
 
@@ -43,9 +50,5 @@ class StockData
         }
 
         $this->stockUpdater->processImport($stockDataArray);
-
-        $this->logger->debug(__('Ended stock import:') . date('Y-m-d H:i:s', time()));
-
-        return;
     }
 }

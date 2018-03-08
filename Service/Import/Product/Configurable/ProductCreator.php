@@ -86,7 +86,8 @@ class ProductCreator implements ProductCreatorInterface
 
     public function create(array $dataArray)
     {
-        $product = $this->getConfigurableProductInstance($dataArray['sku']);
+        $sku = $dataArray['sku'];
+        $product = $this->getConfigurableProductInstance($sku);
         $childProducts = $this->createChildrenProductsArray($dataArray['children']);
 
         if (empty($childProducts)) {
@@ -108,7 +109,7 @@ class ProductCreator implements ProductCreatorInterface
 
         $product->setExtensionAttributes($extensionConfigurableAttributes);
         $product->setName($dataArray['name']);
-        $product->setSku($dataArray['sku']);
+        $product->setSku($sku);
         $product->setAttributeSetId($product->getDefaultAttributeSetId());
         $product->setWebsiteIds([1]);
         $product->setVisibility(Visibility::VISIBILITY_BOTH);
@@ -124,6 +125,8 @@ class ProductCreator implements ProductCreatorInterface
         $product->setData('category_ids', $this->categoryIdTranslator->translateBaseToClientIds($dataArray['categories']));
         $product->setData('import_updated_at', $dataArray['updated_at']);
         $product->setData('is_imported', true);
+        $product->setUrlKey($product->formatUrlKey($sku . '-' . $dataArray['name']));
+
         $this->setProductsDescriptions($product, $childProducts);
         $this->productRepository->save($product);
 
@@ -145,7 +148,7 @@ class ProductCreator implements ProductCreatorInterface
 
         foreach ($childrenArray as $childSku) {
             try {
-                $childProductModel = $this->productRepository->get($childSku);
+                $childProductModel = $this->productRepository->get($childSku, false, null, true);
                 $attributeExists = false;
                 foreach ($mappedAttributes as $attributeCode) {
                     if ($childProductModel->getData($attributeCode) != null) {
@@ -156,7 +159,7 @@ class ProductCreator implements ProductCreatorInterface
                     $childProducts[] = $childProductModel;
                 }
             } catch (\Exception $e) {}
-        }
+            }
 
         return $childProducts;
     }
@@ -216,7 +219,6 @@ class ProductCreator implements ProductCreatorInterface
         $idBySku = $product->getResource()->getIdBySku($sku);
         if ($idBySku !== false) {
             $product->getResource()->load($product, $idBySku);
-            $this->urlPersist->replace($this->urlRewriteGenerator->generate($product));
         }
         $product->setTypeId(Configurable::TYPE_CODE);
 

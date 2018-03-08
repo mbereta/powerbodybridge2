@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 
 class ManufacturerRepository implements ManufacturerRepositoryInterface
 {
-    const MANUFACTURER_NORMAL_LOGO_PATH = 'manufacturer/normal/';
+
     const MANUFACTURER_LOGO_PATH = 'manufacturer/';
 
     /**
@@ -115,47 +115,26 @@ class ManufacturerRepository implements ManufacturerRepositoryInterface
 
     /**
      * @param array $manufacturerDataArray
-     *
      * @return array
      */
     public function downloadManufacturerLogo(array $manufacturerDataArray)
     {
         try {
-            $normalLogoUrl = $manufacturerDataArray['normal_logo_url'];
             $logoUrl = $manufacturerDataArray['logo_url'];
             $mediaDir = $this->getManufacturerDestinationUrl();
 
-            if (false === file_exists($mediaDir . self::MANUFACTURER_LOGO_PATH)) {
-                mkdir($mediaDir . self::MANUFACTURER_LOGO_PATH, 0777, true);
-            }
-            if (false === file_exists($mediaDir . self::MANUFACTURER_NORMAL_LOGO_PATH)) {
-                mkdir($mediaDir . self::MANUFACTURER_NORMAL_LOGO_PATH, 0777, true);
-            }
-
-            $destinationNormalLogoPath = $mediaDir . self::MANUFACTURER_NORMAL_LOGO_PATH
-                . $manufacturerDataArray['logo_normal'];
-            $this->imageDownloader->downloadImage($normalLogoUrl, $destinationNormalLogoPath);
-
-            $destinationLogoPath = $mediaDir . self::MANUFACTURER_LOGO_PATH . $manufacturerDataArray['logo'];
-            $this->imageDownloader->downloadImage($logoUrl, $destinationLogoPath);
+            $destinationLogoPath = $mediaDir . self::MANUFACTURER_LOGO_PATH;
+            $this->imageDownloader->downloadImage($logoUrl, $destinationLogoPath, (string) $manufacturerDataArray['logo']);
         } catch (ImageFileNotFoundException $e) {
             unset($manufacturerDataArray['logo']);
-            unset($manufacturerDataArray['normal_logo']);
-            $this->logger->debug($e->getMessage(), [
-                'message' => __('Could not find image for manufacturer') . ': '
-                    . $manufacturerDataArray['name'],
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'previous' => $e->getPrevious(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            $this->logger->debug(__('Could not find image for manufacturer') . ': '
+                . $manufacturerDataArray['name']);
         } catch (\Exception $e) {
             unset($manufacturerDataArray['logo']);
-            unset($manufacturerDataArray['normal_logo']);
-            $this->logger->error($e->getMessage());
+            $this->logger->error($e);
         }
 
         return $manufacturerDataArray;
     }
+
 }

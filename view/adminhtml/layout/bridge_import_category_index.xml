@@ -8,9 +8,6 @@
     <body>
         <referenceContainer name="content">
             <block class="Powerbody\Bridge\Block\Adminhtml\Import\Index" name="import_index" template="Powerbody_Bridge::import/index.phtml">
-                <arguments>
-                    <argument name="list_title" xsi:type="string">Import categories</argument>
-                </arguments>
                 <block class="Powerbody\Bridge\Block\Adminhtml\Import\Category" name="import_list" template="Powerbody_Bridge::import/category.phtml"/>
             </block>
         </referenceContainer>

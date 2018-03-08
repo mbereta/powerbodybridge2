@@ -18,5 +18,5 @@ interface ConfigurationReaderInterface
     public function getUpdateOrderStates() : array;
     
     public function getIngredientLabelWatermarkImage() : string;
-    
+
 }

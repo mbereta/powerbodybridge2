@@ -104,6 +104,8 @@ class CategoryCreator implements CategoryCreatorInterface
 
         } else {
             $categoryModel = $this->categoryResourceRepository->getCategoryModelById($clientCategoryId);
+            $categoryModel->setData('is_anchor', false);
+            $categoryModel->save();
         }
 
         return $categoryModel;
@@ -148,6 +150,9 @@ class CategoryCreator implements CategoryCreatorInterface
                 $rootCategoryId
             );
         }
+
+        $categoryDataArray['is_imported'] = true;
+        $categoryDataArray['is_anchor'] = false;
 
         $catalogCategoryModel = $this->categoryFactory->create();
         $catalogCategoryModel->setData($categoryDataArray);
@@ -201,11 +206,22 @@ class CategoryCreator implements CategoryCreatorInterface
         $notSelectedImportedCategoryCollection = $this->categoryResourceRepository
             ->getNotSelectedImportedCategoryCollection($activeCategoryIdsArray);
 
+        $categories = $this->categoryFactory->create()
+            ->getCollection()
+            ->addFieldToFilter('is_imported', true)
+            ->addFieldToFilter('entity_id', ['nin' => $activeCategoryIdsArray]);
+
+        foreach ($categories as $category) {
+            $category->setData('import_delete', true);
+            $this->categoryResourceModel->delete($category);
+        }
+
         foreach ($notSelectedImportedCategoryCollection as $importedCategoryModel) {
 
             $clientCategoryId = $importedCategoryModel->getData('client_category_id');
 
             $categoryModel = $this->categoryFactory->create();
+            $categoryModel->setData('import_delete', true);
 
             $isMainCategory = false;
 

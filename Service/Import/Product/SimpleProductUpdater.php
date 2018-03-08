@@ -18,7 +18,7 @@ use Powerbody\Bridge\Service\Sync\Entity\Attribute as AttributeService;
 use Powerbody\Manufacturer\Service\Manufacturer\ProductServiceInterface;
 use Powerbody\Bridge\Service\ImageDownloaderInterface;
 use \Powerbody\Manufacturer\Model\Manufacturer;
-use  \Powerbody\Manufacturer\Model\ResourceModel\Manufacturer as ManufacturerResourceModel;
+use \Powerbody\Manufacturer\Model\ResourceModel\Manufacturer as ManufacturerResourceModel;
 use \Magento\Catalog\Model\Product\Visibility;
 use \Magento\Catalog\Api\ProductRepositoryInterface;
 use Powerbody\Bridge\Service\Import\IdTranslatorInterface;
@@ -109,6 +109,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
     public function createOrUpdate(Product $productModel, array $productDataArray)
     {
+        $productModel->setData('is_saving_by_import', true);
+
         $sku = $productDataArray['sku'];
         $isUpdatedWhileImport = boolval($productModel->getData('is_updated_while_import'));
         $isNew = !boolval($productModel->getId());
@@ -160,8 +162,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         if (true === $isNew || true === $isUpdatedWhileImport) {
             $this->downloadImageForProduct($productModel);
         }
-        
-        $productModel->formatUrlKey($productModel->getName());
+
+        $productModel->setUrlKey($productModel->formatUrlKey($sku . '-' . $productDataArray['name']));
         $this->productResourceModel->save($productModel);
         $this->updateStockItemForProductBySku($sku, $stockDataArray);
         $this->updateManufacturerDataForProduct($productModel, $productDataArray['manufacturers']);
@@ -293,13 +295,15 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
             $fileName = explode('/', $imageUrl);
             $fileName = end($fileName);
-            $this->imageDownloader->downloadImage($imageUrl, BP. '/pub/media/import/' . $fileName);
+            $this->imageDownloader->downloadImage($imageUrl, BP. '/pub/media/import/', (string) $fileName);
+
             $productModel->addImageToMediaGallery(
                 BP. '/pub/media/import/' . $fileName,
                 ['image', 'small_image', 'thumbnail'],
                 false,
                 false
             );
+        } catch (\Exception $ex) {
         } catch (ImageFileNotFoundException $e) {
         }
     }

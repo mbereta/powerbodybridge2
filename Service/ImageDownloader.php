@@ -5,13 +5,18 @@ namespace Powerbody\Bridge\Service;
 
 class ImageDownloader implements ImageDownloaderInterface
 {
-    public function downloadImage(string $filePath, string $destinationPath) : bool
+
+    public function downloadImage(string $filePath, string $destinationPath, string $fileName) : bool
     {
-        if (false === $this->checkIfImageExists($filePath) || false === copy($filePath, $destinationPath)) {
-            throw new ImageFileNotFoundException('');
+        if (false === file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
         }
 
-        return true;
+        if (false === $this->checkIfImageExists($filePath)) {
+            return false;
+        }
+
+        return copy($filePath, $destinationPath . $fileName);
     }
 
     private function checkIfImageExists(string $fileUrl) : bool
@@ -24,4 +29,5 @@ class ImageDownloader implements ImageDownloaderInterface
 
         return $returnCode === 200;
     }
+
 }

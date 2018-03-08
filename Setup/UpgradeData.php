@@ -9,6 +9,7 @@ use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use \Magento\Catalog\Model\Product;
+use \Magento\Catalog\Model\Category;
 use \Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use \Magento\Catalog\Model\Product\Type as ProductType;
 
@@ -281,6 +282,70 @@ class UpgradeData implements UpgradeDataInterface
             );
 
             $eavSetup->addAttributeToSet(Product::ENTITY, 'Default', 'General', $attributeCode);
+        }
+
+        if (version_compare($context->getVersion(), '1.0.8', '<')) {
+
+            /* @var $eavSetup EavSetup */
+            $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+
+            $attributeCode = 'is_imported';
+            $attributeDataArray =  [
+                'type' => 'int',
+                'label' => 'Is category imported',
+                'input' => 'boolean',
+                'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
+                'visible' => false,
+                'default' => '0',
+                'required' => false,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'group' => 'Display Settings',
+            ];
+
+            $eavSetup->addAttribute(
+                Category::ENTITY,
+                $attributeCode,
+                $attributeDataArray
+            );
+        }
+
+        if (version_compare($context->getVersion(), '1.0.9', '<')) {
+            /* @var $eavSetup EavSetup */
+            $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+
+            $attributeCode = 'powerbody_mixed_weight';
+            $attributeId = $eavSetup->getAttributeId(Product::ENTITY, $attributeCode);
+
+            if (false === $attributeId) {
+                $eavSetup->addAttribute(
+                    Product::ENTITY,
+                    $attributeCode,
+                    [
+                        'group'                     => 'General',
+                        'type'                      => 'int',
+                        'backend'                   => '',
+                        'frontend'                  => '',
+                        'label'                     => 'Mixed Weight',
+                        'input'                     => 'select',
+                        'class'                     => '',
+                        'source'                    => '',
+                        'global'                    => Attribute::SCOPE_GLOBAL,
+                        'visible'                   => true,
+                        'required'                  => false,
+                        'user_defined'              => true,
+                        'default'                   => '',
+                        'searchable'                => false,
+                        'filterable'                => false,
+                        'comparable'                => false,
+                        'visible_on_front'          => false,
+                        'used_in_product_listing'   => true,
+                        'unique'                    => false,
+                        'apply_to'                  => ''
+                    ]
+                );
+            }
+
+            $eavSetup->addAttributeToSet(Product::ENTITY, 'Default', 'General', $attributeCode, 100);
         }
     }
 }

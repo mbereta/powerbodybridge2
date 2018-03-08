@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="catalog_product_save_before">
+        <observer name="bridge_product_save_protection" instance="Powerbody\Bridge\Observer\Catalog\Product\ProtectSave" />
+    </event>
+    <event name="catalog_product_delete_before">
+        <observer name="bridge_product_delete_protection" instance="Powerbody\Bridge\Observer\Catalog\Product\ProtectDelete" />
+    </event>
+    <event name="catalog_entity_attribute_delete_before">
+        <observer name="bridge_product_attribute_delete_protection" instance="Powerbody\Bridge\Observer\Catalog\Product\Attribute\ProtectDelete" />
+    </event>
+    <event name="catalog_category_delete_before">
+        <observer name="bridge_category_delete_protection" instance="Powerbody\Bridge\Observer\Catalog\Category\ProtectDelete" />
+    </event>
+</config>

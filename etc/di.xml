@@ -138,6 +138,8 @@
 
     <preference for="Powerbody\Bridge\Service\Fixer\ConfigurableDescriptionInterface" type="Powerbody\Bridge\Service\Fixer\ConfigurableDescription"/>
 
+    <preference for="Magento\Catalog\Controller\Adminhtml\Product\MassDelete" type="Powerbody\Bridge\Controller\Adminhtml\Catalog\Product\MassDelete" />
+
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

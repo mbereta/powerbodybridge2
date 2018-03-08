@@ -5,7 +5,6 @@ namespace Powerbody\Bridge\Controller\Adminhtml\Import\Category;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Powerbody\Bridge\Service\CategoryCreatorInterface;
 use Powerbody\Bridge\Service\Imported\ImportedEntityServiceInterface;
@@ -58,9 +57,13 @@ class Save extends Action
         $this->logger = $logger;
         $this->resourceConnection = $resourceConnection;
         $this->dbConnection = $this->resourceConnection->getConnection();
+
         return parent::__construct($context);
     }
 
+    /**
+     * @return \Magento\Framework\App\ResponseInterface
+     */
     public function execute()
     {
         try {
@@ -73,18 +76,19 @@ class Save extends Action
 
             $this->dbConnection->commit();
         } catch (\Exception $e) {
-            $this->logger->debug($e->getMessage(), [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'previous' => $e->getPrevious(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            $this->messageManager->addErrorMessage(__('Failed to save your preferences, please try again.'));
             $this->dbConnection->rollBack();
+            $this->logger->error($e);
+            $this->messageManager->addErrorMessage(__('Failed to save your preferences, please try again.'));
         }
 
         return $this->_redirect('bridge/import_category/index');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Powerbody_Bridge::import_categories');
     }
 }

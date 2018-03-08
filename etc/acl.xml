@@ -3,8 +3,8 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Powerbody_Bridge::bridge" title="Bridge" translate="title" sortOrder="100">
-                        <resource id="Powerbody_Bridge::import_categories" title="Import categories" translate="title" sortOrder="10" />
-                        <resource id="Powerbody_Bridge::import_manufacturers" title="Import manufacturers" translate="title" sortOrder="10" />
+                    <resource id="Powerbody_Bridge::import_categories" title="Import categories" translate="title" sortOrder="10" />
+                    <resource id="Powerbody_Bridge::import_manufacturers" title="Import manufacturers" translate="title" sortOrder="10" />
                 </resource>
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">

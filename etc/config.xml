@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <powerbody>
-            <bridge>
-                <enabled>1</enabled>
-            </bridge>
-        </powerbody>
+        <ws_settings>
+            <general>
+                <enabled>0</enabled>
+                <api_wsdl_url><![CDATA[http://www.powerbody.co.uk/index.php/api/soap/?wsdl]]></api_wsdl_url>
+            </general>
+        </ws_settings>
     </default>
 </config>

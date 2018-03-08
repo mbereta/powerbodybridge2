@@ -42,36 +42,34 @@ class SimpleProduct implements TaskInterface
 
     public function run()
     {
-        $this->logger->debug(__('Started simple product import:') . date('Y-m-d H:i:s', time()));
         $selectedManufacturerCollection = $this->importedManufacturerRepository
             ->getSelectedImportedManufacturerCollection();
-        $selectedCategoryCollection = $this->importedCategoryRepository
-            ->getSelectedImportedCategoryCollection();
         $selectedManufacturerIds = $this->importedManufacturerRepository
             ->createManufacturerBaseIdsArray($selectedManufacturerCollection);
+
+        $selectedCategoryCollection = $this->importedCategoryRepository
+            ->getSelectedImportedCategoryCollection();
         $selectedCategoryIds = $this->importedCategoryRepository
             ->createCategoryBaseIdsArray($selectedCategoryCollection);
-        
+
         $productSkuArray = $this->simpleProductRepository->getProductSkuForCategoryAndManufacturer(
             $selectedManufacturerIds,
             $selectedCategoryIds
         );
-        
+
         $this->simpleProductImporter->disableNotRequestedProducts($productSkuArray);
-        
+
         if (true === empty($productSkuArray)) {
             return $this;
         }
 
         $productSkuArray = $this->productDataComparator->compareResponseDataWithExisting($productSkuArray);
-        
+
         $productDataArray = $this->simpleProductRepository->getProductDataForSkuArray($productSkuArray);
 
         if (false === empty($productDataArray)) {
             $this->simpleProductImporter->processImport($productDataArray);
         }
-
-        $this->logger->debug(__('Ended simple product import:') . date('Y-m-d H:i:s', time()));
 
         return $this;
     }

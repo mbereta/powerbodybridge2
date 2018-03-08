@@ -52,8 +52,6 @@ class ConfigurableProducts implements TaskInterface
 
     public function run()
     {
-        $this->logger->debug(__('Started configurable product import:') . date('Y-m-d H:i:s', time()));
-
         $selectedManufacturerIds = $this->importedManufacturerRepository
             ->getSelectedImportedManufacturerCollection()
             ->getColumnValues('base_manufacturer_id');
@@ -81,14 +79,12 @@ class ConfigurableProducts implements TaskInterface
         }
 
         $this->configurableProductImporter->processImport($productDataArray);
-    
+
         /** @var \Magento\Indexer\Model\Indexer\Collection $indexerCollection */
         $indexerCollection = $this->indexerCollectionFactory->create();
         foreach ($indexerCollection as $indexer) {
             /** @var \Magento\Indexer\Model\Indexer $indexer */
             $indexer->reindexAll();
         }
-
-        $this->logger->debug(__('Ended configurable product import:') . date('Y-m-d H:i:s', time()));
     }
 }
