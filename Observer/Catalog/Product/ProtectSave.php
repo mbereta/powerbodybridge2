@@ -22,6 +22,8 @@ class ProtectSave implements \Magento\Framework\Event\ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer) : self
     {
+        return $this;
+
         $product = $observer->getData('product');
 
         if (true === $product->getData('is_saving_by_import')) {
