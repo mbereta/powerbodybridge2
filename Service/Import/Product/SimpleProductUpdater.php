@@ -228,9 +228,11 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $fullAttributeArray = $this->attributeRepository->getAttributesWithOptionsArray();
         $attributeMapArray = $this->attributeRepository->getMappedAttributesArray();
         foreach ($attributeSourceArray as $attributeCode => $attributeName) {
-            $attributeArrayForCode = $fullAttributeArray[$attributeCode];
-            $arrayKey = array_search($attributeName, array_column($attributeArrayForCode, 'label'));
-            $attributesArray[$attributeMapArray[$attributeCode]] = $attributeArrayForCode[$arrayKey]['value'];
+            if (true === isset($fullAttributeArray[$attributeCode])) {
+                $attributeArrayForCode = $fullAttributeArray[$attributeCode];
+                $arrayKey = array_search($attributeName, array_column($attributeArrayForCode, 'label'));
+                $attributesArray[$attributeMapArray[$attributeCode]] = $attributeArrayForCode[$arrayKey]['value'];
+            }
         }
 
         return $attributesArray;
