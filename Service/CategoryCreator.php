@@ -104,7 +104,7 @@ class CategoryCreator implements CategoryCreatorInterface
 
         } else {
             $categoryModel = $this->categoryResourceRepository->getCategoryModelById($clientCategoryId);
-            $categoryModel->setData('is_anchor', false);
+            $categoryModel->setData('is_anchor', true);
             $categoryModel->save();
         }
 
@@ -152,7 +152,7 @@ class CategoryCreator implements CategoryCreatorInterface
         }
 
         $categoryDataArray['is_imported'] = true;
-        $categoryDataArray['is_anchor'] = false;
+        $categoryDataArray['is_anchor'] = true;
 
         $catalogCategoryModel = $this->categoryFactory->create();
         $catalogCategoryModel->setData($categoryDataArray);
