@@ -88,7 +88,11 @@ class ProductCreator implements ProductCreatorInterface
     {
         $sku = $dataArray['sku'];
         $product = $this->getConfigurableProductInstance($sku);
-        $childProducts = $this->createChildrenProductsArray($dataArray['children']);
+        $childProducts = [];
+
+        if (true === isset($dataArray['children'])) {
+            $childProducts = $this->createChildrenProductsArray($dataArray['children']);
+        }
 
         if (empty($childProducts)) {
             return;
