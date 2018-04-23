@@ -153,6 +153,10 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
             ->setData('website_ids', $this->getImportProductWebsiteIds())
             ->setData('status', (int)$productDataArray['status']);
 
+        if (false === @getimagesize($productModel->getData('image_url'))) {
+            $productModel->setData('image_url', null);
+        }
+
         if (true === $isNew) {
             $productModel->addData(['is_updated_while_import' => true]);
         }
@@ -295,16 +299,18 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
                 $this->deleteProductMediaGalleryEntries($productModel);
             }
 
-            $fileName = explode('/', $imageUrl);
-            $fileName = end($fileName);
-            $this->imageDownloader->downloadImage($imageUrl, BP. '/pub/media/import/', (string) $fileName);
+            if (null !== $imageUrl) {
+                $fileName = explode('/', $imageUrl);
+                $fileName = end($fileName);
+                $this->imageDownloader->downloadImage($imageUrl, BP. '/pub/media/import/', (string) $fileName);
 
-            $productModel->addImageToMediaGallery(
-                BP. '/pub/media/import/' . $fileName,
-                ['image', 'small_image', 'thumbnail'],
-                false,
-                false
-            );
+                $productModel->addImageToMediaGallery(
+                    BP. '/pub/media/import/' . $fileName,
+                    ['image', 'small_image', 'thumbnail'],
+                    false,
+                    false
+                );
+            }
         } catch (\Exception $ex) {
         } catch (ImageFileNotFoundException $e) {
         }

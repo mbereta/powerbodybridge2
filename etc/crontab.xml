@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
-    <group id="import">
+    <group id="default">
         <job name="fullImport" instance="Powerbody\Bridge\Cron\Import" method="run">
             <schedule>00 00 * * *</schedule>
         </job>
