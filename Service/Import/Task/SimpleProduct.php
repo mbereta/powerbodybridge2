@@ -57,11 +57,11 @@ class SimpleProduct implements TaskInterface
             $selectedCategoryIds
         );
 
-        $this->simpleProductImporter->disableNotRequestedProducts($productSkuArray);
-
         if (true === empty($productSkuArray)) {
             return $this;
         }
+
+        $this->simpleProductImporter->disableNotRequestedProducts($productSkuArray);
 
         $productSkuArray = $this->productDataComparator->compareResponseDataWithExisting($productSkuArray);
 

@@ -65,11 +65,11 @@ class ConfigurableProducts implements TaskInterface
             $selectedCategoryIds
         );
 
-        $this->configurableProductImporter->disableNotRequestedProducts($productSkuArray);
-
         if (empty($productSkuArray)) {
             return;
         }
+
+        $this->configurableProductImporter->disableNotRequestedProducts($productSkuArray);
 
         $productSkuArray = $this->comparator->compareResponseDataWithExisting($productSkuArray);
         $productDataArray = $this->configurableProductRepository->findBySku($productSkuArray);
