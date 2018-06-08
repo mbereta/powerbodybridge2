@@ -116,5 +116,5 @@ class OrderEntryRepository implements OrderEntryRepositoryInterface
             throw new \Magento\Framework\Exception\CouldNotSaveException($e->getMessage());
         }
     }
-
+    
 }

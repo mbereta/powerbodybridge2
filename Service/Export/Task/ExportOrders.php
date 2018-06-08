@@ -88,5 +88,5 @@ class ExportOrders implements TaskInterface
 
         $this->logger->critical($exception);
     }
-
+    
 }

@@ -182,7 +182,7 @@ class OrderService implements OrderServiceInterface
         if (false === empty($orderData['tracking_number'])) {
             $this->shipmentService->createOrUpdate($order, $orderData);
         }
-
+    
         $this->orderRepository->save($order);
     }
 
