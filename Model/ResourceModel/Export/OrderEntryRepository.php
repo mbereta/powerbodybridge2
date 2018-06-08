@@ -107,7 +107,7 @@ class OrderEntryRepository implements OrderEntryRepositoryInterface
             )
             ->load();
     }
-
+    
     public function save(\Powerbody\Bridge\Model\Export\OrderEntry $orderTransferStatus)
     {
         try {
