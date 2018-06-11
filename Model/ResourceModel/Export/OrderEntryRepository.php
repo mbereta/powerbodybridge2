@@ -69,7 +69,7 @@ class OrderEntryRepository implements OrderEntryRepositoryInterface
     {
         /* @var $orderCollection \Magento\Sales\Model\ResourceModel\Order\Collection */
         $orderCollection = $this->orderCollectionFactory->create();
-        $orderCollection->addFieldToFilter('main_table.status', ['in' => $this->configurationReader->getUpdateOrderStates()]);
+        $orderCollection->addFieldToFilter('main_table.status', ['in' => $this->configurationReader->getExportOrderStates()]);
 
         $orderCollection->getSelect()
             ->joinLeft(
