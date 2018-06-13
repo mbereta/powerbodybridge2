@@ -147,14 +147,16 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $productModel
             ->addData($productDataArray)
             ->addData($attributeDataArray)
-            ->setData('is_imported', true)
-            ->setData('visibility', Visibility::VISIBILITY_BOTH)
-            ->setData('attribute_set_id', $this->getProductAttributeSetId())
-            ->setData('website_ids', $this->getImportProductWebsiteIds())
-            ->setData('status', (int)$productDataArray['status']);
-
+            ->addData([
+                'is_imported' => true,
+                'visibility' => Visibility::VISIBILITY_BOTH,
+                'attribute_set_id' => $this->getProductAttributeSetId(),
+                'website_ids' => $this->getImportProductWebsiteIds(),
+                'status' => (int)$productDataArray['status'],
+            ]);
+        
         if (false === @getimagesize($productModel->getData('image_url'))) {
-            $productModel->setData('image_url', null);
+            $productModel->addData(['image_url' => null]);
         }
 
         if (true === $isNew) {
@@ -168,15 +170,24 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         }
 
         $productModel->setUrlKey($productModel->formatUrlKey($sku . '-' . $productDataArray['name']));
+
+        $imageAttributes = [
+            'image' => $productModel->getData('image'),
+            'small_image' => $productModel->getData('small_image'),
+            'thumbnail' => $productModel->getData('thumbnail'),
+        ];
+
         $this->productResourceModel->save($productModel);
+
         $this->updateStockItemForProductBySku($sku, $stockDataArray);
         $this->updateManufacturerDataForProduct($productModel, $productDataArray['manufacturers']);
-        $this->updateAdminStoreView($productModel);
+        $this->updateAdminStoreView($productModel, $imageAttributes);
     }
 
-    private function updateAdminStoreView(Product $productModel)
+    private function updateAdminStoreView(Product $productModel, array $imageAttributes)
     {
         $productModel->setStoreId(self::ADMIN_STORE_ID);
+        $productModel->addData($imageAttributes);
         $this->productResourceModel->save($productModel);
     }
 
@@ -305,7 +316,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
                 $this->imageDownloader->downloadImage($imageUrl, BP. '/pub/media/import/', (string) $fileName);
 
                 $productModel->addImageToMediaGallery(
-                    BP. '/pub/media/import/' . $fileName,
+                    BP. '/pub/media/import/' . (string)  $fileName,
                     ['image', 'small_image', 'thumbnail'],
                     false,
                     false
