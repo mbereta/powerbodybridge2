@@ -153,7 +153,7 @@ class OrderService implements OrderServiceInterface
         $telephone = $address->getData('telephone');
         $landlineTelephone = $address->getData('landline_telephone');
 
-        return $telephone ? : $landlineTelephone;
+        return $telephone ? : ($landlineTelephone ? : '');
     }
 
     private function updateOrder(array $orderData)
