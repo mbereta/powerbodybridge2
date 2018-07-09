@@ -103,6 +103,7 @@ class OrderService implements OrderServiceInterface
             'date_add' => $order->getData('created_at'),
             'comment' => $order->getData('notes'),
             'address' => $this->prepareOrderAddressData($order),
+            'billing_address' => $this->prepareOrderBillingAddressData($order),
             'products' => $this->prepareOrderItemsData($order),
         ];
     }
@@ -111,6 +112,27 @@ class OrderService implements OrderServiceInterface
     {
         /* @var \Magento\Sales\Model\Order\Address $address */
         $address = $order->getShippingAddress();
+
+        return [
+            'name' => $address->getData('firstname'),
+            'surname' => $address->getData('lastname'),
+            'address1' => $address->getStreetLine(1),
+            'address2' => $address->getStreetLine(2),
+            'address3' => $address->getStreetLine(3),
+            'postcode' => $address->getData('postcode'),
+            'city' => $address->getData('city'),
+            'county' => null,
+            'country_name' => null,
+            'country_code' => $address->getData('country_id'),
+            'phone' => $this->prepareOrderPhoneNumber($address),
+            'email' => $order->getData('customer_email'),
+        ];
+    }
+
+    private function prepareOrderBillingAddressData(\Magento\Sales\Model\Order $order): array
+    {
+        /* @var \Magento\Sales\Model\Order\Address $address */
+        $address = $order->getBillingAddress();
 
         return [
             'name' => $address->getData('firstname'),
