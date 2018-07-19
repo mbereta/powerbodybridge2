@@ -71,4 +71,24 @@ class SimpleProductRepository implements SimpleProductRepositoryInterface
         
         return $productsBySku;
     }
+
+    public function getProductsTaxRates(array $productSkus) : array
+    {
+        $response = $this->client->call(
+            'bridge.getProductsTaxRates',
+            [
+                'product_sku' => $productSkus,
+            ]
+        );
+
+        if (
+            false === is_array($response)
+            || false === $this->client->checkResponseIsValid($response)
+        ) {
+            $this->logger->error('Response data is not valid');
+            return [];
+        }
+
+        return $response['data'];
+    }
 }
