@@ -11,4 +11,6 @@ interface SimpleProductRepositoryInterface
     ) : array ;
 
     public function getProductDataForSkuArray(array $skuArray) : array;
+
+    public function getProductsTaxRates(array $skuArray) : array;
 }

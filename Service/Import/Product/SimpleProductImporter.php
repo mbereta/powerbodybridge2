@@ -10,6 +10,7 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 use \Psr\Log\LoggerInterface;
 use \Magento\Catalog\Model\Product\Attribute\Source\Status;
+use \Powerbody\Bridge\Service\TaxService;
 
 class SimpleProductImporter implements SimpleProductImporterInterface
 {
@@ -29,6 +30,8 @@ class SimpleProductImporter implements SimpleProductImporterInterface
 
     private $storeManager;
 
+    private $taxService;
+
     public function __construct(
         SimpleProductUpdater $simpleProductUpdater,
         ProductFactory $productFactory,
@@ -36,7 +39,8 @@ class SimpleProductImporter implements SimpleProductImporterInterface
         ResourceConnection $resourceConnection,
         ProductRepositoryInterface $productRepository,
         LoggerInterface $logger,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        TaxService $taxService
     ) {
         $this->simpleProductUpdater = $simpleProductUpdater;
         $this->productFactory = $productFactory;
@@ -46,6 +50,7 @@ class SimpleProductImporter implements SimpleProductImporterInterface
         $this->productRepository =  $productRepository;
         $this->logger = $logger;
         $this->storeManager = $storeManager;
+        $this->taxService = $taxService;
     }
 
     public function processImport(array $productsDataArray)
@@ -54,6 +59,11 @@ class SimpleProductImporter implements SimpleProductImporterInterface
 
             try {
                 $this->dbConnection->beginTransaction();
+
+                if (true === isset($productDataArray['rate'])) {
+                    $productDataArray['tax_class_id'] = $this->taxService->getTaxClassIdByRate(floatval($productDataArray['rate']));
+                }
+
                 $productModel = $this->getProductModelBySku($productDataArray['sku']);
                 $this->simpleProductUpdater->createOrUpdate($productModel, $productDataArray);
                 $this->dbConnection->commit();
