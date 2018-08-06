@@ -105,6 +105,9 @@ class OrderService implements OrderServiceInterface
             'address' => $this->prepareOrderAddressData($order),
             'billing_address' => $this->prepareOrderBillingAddressData($order),
             'products' => $this->prepareOrderItemsData($order),
+            'coupon_code' => $order->getData('coupon_code'),
+            'discount_amount' => $order->getData('discount_amount'),
+            'discount_description' => $order->getData('discount_description'),
         ];
     }
 
@@ -164,6 +167,9 @@ class OrderService implements OrderServiceInterface
                 'price' => $item->getData('price_incl_tax'),
                 'currency' => $order->getData('order_currency_code'),
                 'tax' => $item->getData('tax_percent'),
+                'discount_amount' => $item->getData('discount_amount'),
+                'discount_percent' => $item->getData('discount_percent'),
+                'discount_tax_compensation_amount' => $item->getData('discount_tax_compensation_amount'),
             ];
         }
 
