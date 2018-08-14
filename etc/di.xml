@@ -137,13 +137,16 @@
     <preference for="Powerbody\Bridge\Service\TrackServiceInterface" type="Powerbody\Bridge\Service\TrackService"/>
 
     <preference for="Powerbody\Bridge\Service\Fixer\ConfigurableDescriptionInterface" type="Powerbody\Bridge\Service\Fixer\ConfigurableDescription"/>
+    <preference for="Powerbody\Bridge\Service\Cron\ResetInterface" type="Powerbody\Bridge\Service\Cron\Reset"/>
 
     <preference for="Magento\Catalog\Controller\Adminhtml\Product\MassDelete" type="Powerbody\Bridge\Controller\Adminhtml\Catalog\Product\MassDelete" />
+
 
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="powerbodybridge_fix_descriptions" xsi:type="object">Powerbody\Bridge\Console\Command\FixDescriptionsCommand</item>
+                <item name="powerbodybridge_reset_cron" xsi:type="object">Powerbody\Bridge\Console\Command\ResetCronCommand</item>
             </argument>
         </arguments>
     </type>

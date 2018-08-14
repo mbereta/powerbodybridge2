@@ -10,10 +10,12 @@ use Powerbody\Bridge\System\Configuration\ConfigurationReaderInterface;
 
 class Client implements ClientInterface
 {
-    
+
     const API_RESPONSE_SUCCESS = 'SUCCESS';
-    
-    private $soapClient;
+
+    private $soapClient = null;
+
+    private $clientFactory;
 
     private $jsonDecoder;
 
@@ -29,12 +31,16 @@ class Client implements ClientInterface
     ) {
         $this->jsonDecoder = $jsonDecoder;
         $this->jsonEncoder = $jsonEncoder;
+        $this->clientFactory = $clientFactory;
         $this->configurationReader = $configurationReader;
-        $this->soapClient = $clientFactory->create($configurationReader->getWsdlUrl());
     }
 
     public function call(string $method, array $params = null) : array
     {
+        if (null === $this->soapClient) {
+            $this->soapClient = $this->clientFactory->create($this->configurationReader->getWsdlUrl());
+        }
+
         if (null !== $params) {
             $params = $this->jsonEncoder->encode($params);
         }
