@@ -12,14 +12,20 @@ use \Magento\Catalog\Model\Product;
 use \Magento\Catalog\Model\Category;
 use \Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use \Magento\Catalog\Model\Product\Type as ProductType;
+use \Powerbody\Bridge\Service\Fixer\ProductTaxClass as TaxFixer;
 
 class UpgradeData implements UpgradeDataInterface
 {
     private $eavSetupFactory;
 
-    public function __construct(EavSetupFactory $eavSetupFactory)
-    {
+    private $taxFixer;
+
+    public function __construct(
+        EavSetupFactory $eavSetupFactory,
+        TaxFixer $taxFixer
+    ){
         $this->eavSetupFactory = $eavSetupFactory;
+        $this->taxFixer = $taxFixer;
     }
 
     public function upgrade(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
@@ -58,7 +64,7 @@ class UpgradeData implements UpgradeDataInterface
                             'visible'                   => true,
                             'required'                  => false,
                             'user_defined'              => true,
-                            'default'                   => '', 
+                            'default'                   => '',
                             'searchable'                => false,
                             'filterable'                => false,
                             'comparable'                => false,
@@ -239,7 +245,7 @@ class UpgradeData implements UpgradeDataInterface
 
             $eavSetup->addAttributeToSet(Product::ENTITY, 'Default', 'General', $attributeCode);
         }
-        
+
         if (version_compare($context->getVersion(), '1.0.7', '<')) {
 
             /* @var $eavSetup EavSetup */
@@ -346,6 +352,10 @@ class UpgradeData implements UpgradeDataInterface
             }
 
             $eavSetup->addAttributeToSet(Product::ENTITY, 'Default', 'General', $attributeCode, 100);
+        }
+
+        if (version_compare($context->getVersion(), '1.1.0', '<')) {
+            $this->taxFixer->fixConfigurableProductsTaxClasses();
         }
     }
 }

@@ -84,6 +84,30 @@ class ProductTaxClass implements ProductTaxClassInterface
         $this->updateProductsTaxClasses($dataToUpdate);
     }
 
+    public function fixConfigurableProductsTaxClasses()
+    {
+        /* @var $productCollection \Magento\Catalog\Model\ResourceModel\Product\Collection */
+        $productCollection = $this->productCollectionFactory->create();
+        $productCollection->addFieldToFilter(Product::TYPE_ID, \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE);
+
+        $dataToUpdate = [];
+
+        foreach ($productCollection as $productModel) {
+
+            $taxClassId = 0;
+
+            $_children = $productModel->getTypeInstance()->getUsedProducts($productModel);
+
+            foreach ($_children as $child){
+                $taxClassId = $child->getData('tax_class_id');
+            }
+
+            $dataToUpdate[$taxClassId][] = $productModel->getId();
+        }
+
+        $this->updateProductsTaxClasses($dataToUpdate);
+    }
+
     private function updateProductsTaxClasses(array $dataToUpdate)
     {
         try {

@@ -111,9 +111,12 @@ class ProductCreator implements ProductCreatorInterface
             $this->getIdsOfProductsInArray($childProducts)
         );
 
+        $taxClassId = $this->getTaxClass($childProducts);
+
         $product->setExtensionAttributes($extensionConfigurableAttributes);
         $product->setName($dataArray['name']);
         $product->setSku($sku);
+        $product->setTaxClassId($taxClassId);
         $product->setAttributeSetId($product->getDefaultAttributeSetId());
         $product->setWebsiteIds([1]);
         $product->setVisibility(Visibility::VISIBILITY_BOTH);
@@ -143,6 +146,17 @@ class ProductCreator implements ProductCreatorInterface
 
         $this->setChildrenAsNotVisibleIndividually($childProducts);
         $this->copyChildrenMediaGalleryToConfigurable($childProducts, $product);
+    }
+
+    private function getTaxClass(array $childProducts) : int
+    {
+        $taxClass = 0;
+
+        foreach ($childProducts as $child) {
+            $taxClass = $child->getData('tax_class_id');
+        }
+
+        return (int) $taxClass;
     }
 
     private function createChildrenProductsArray(array $childrenArray) : array
@@ -245,7 +259,7 @@ class ProductCreator implements ProductCreatorInterface
         $this->productRepository->save($product);
 
         $galleryEntries = [];
-        
+
         foreach ($children as $child) {
             /** @var Product $child */
             $galleryEntries = array_merge($galleryEntries, $child->getMediaGalleryImages()->getItems());
@@ -320,5 +334,5 @@ class ProductCreator implements ProductCreatorInterface
             }
         }
     }
-    
+
 }

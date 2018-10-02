@@ -44,10 +44,10 @@ class TaxService implements TaxServiceInterface
         $key = array_search($rate, $this->taxClassMapper);
 
         if (false === $key) {
-            return $this->taxClassMapper['default'];
+            return (int) $this->taxClassMapper['default'];
         }
 
-        return $key;
+        return (int) $key;
     }
 
     public function getTaxClassMapper() : array
