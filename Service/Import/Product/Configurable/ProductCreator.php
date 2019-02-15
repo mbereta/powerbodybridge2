@@ -65,7 +65,7 @@ class ProductCreator implements ProductCreatorInterface
         ManufacturerRepositoryInterface $manufacturerRepository,
         AttributeRepository $attributeRepository,
         ManufacturerResourceModel $manufacturerResourceModel,
-        ProductServiceInterface $productService,
+       // ProductServiceInterface $productService,
         array $attributes
     ) {
         $this->productFactory = $productFactory;
@@ -80,7 +80,7 @@ class ProductCreator implements ProductCreatorInterface
         $this->categoryIdTranslator = $categoryIdTranslator;
         $this->manufacturerIdTranslator = $manufacturerIdTranslator;
         $this->manufacturerResourceModel = $manufacturerResourceModel;
-        $this->productService = $productService;
+       // $this->productService = $productService;
         $this->attributes = $attributes;
     }
 

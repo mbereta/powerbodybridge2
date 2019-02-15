@@ -70,7 +70,7 @@ class Attribute
     {
         $this->attributeOptionLabelInterface->setStoreId(0);
         $this->attributeOptionLabelInterface->setLabel($attributeOptionValue);
-        $this->eavEntityAttributeOption->setLabel($this->attributeOptionLabelInterface);
+        $this->eavEntityAttributeOption->setLabel($attributeOptionValue);
         $this->eavEntityAttributeOption->setStoreLabels([$this->attributeOptionLabelInterface]);
         $this->eavEntityAttributeOption->setSortOrder(0);
         $this->eavEntityAttributeOption->setIsDefault(false);

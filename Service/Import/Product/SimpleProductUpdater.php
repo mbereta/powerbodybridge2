@@ -76,7 +76,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         ImportedManufacturerRepositoryInterface $importedManufacturerRepository,
         ManufacturerRepositoryInterface $manufacturerRepository,
         AttributeService $attributeService,
-        ProductServiceInterface $productService,
+       // ProductServiceInterface $productService,
         StoreManagerInterface $storeManager,
         ImageDownloaderInterface $imageDownloader,
         ProductRepositoryInterface $productRepository,
@@ -95,7 +95,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $this->importedManufacturerRepository = $importedManufacturerRepository;
         $this->manufacturerRepository = $manufacturerRepository;
         $this->attributeService = $attributeService;
-        $this->productService = $productService;
+     //   $this->productService = $productService;
         $this->storeManager = $storeManager;
         $this->imageDownloader = $imageDownloader;
         $this->productRepository = $productRepository;
