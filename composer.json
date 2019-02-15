@@ -15,5 +15,14 @@
         "psr-4": {
             "Powerbody\\Bridge\\": ""
         }
-    }
+    },
+       "repositories": [
+
+        {
+                "type":"git",
+                "url":"https://github.com/mbereta/manufacturer"
+        }
+    ]
+
+
 }
