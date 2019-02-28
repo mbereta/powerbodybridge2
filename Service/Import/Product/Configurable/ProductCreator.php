@@ -20,7 +20,7 @@ use \Powerbody\Manufacturer\Model\Manufacturer;
 use \Powerbody\Manufacturer\Model\ResourceModel\Manufacturer as ManufacturerResourceModel;
 use Powerbody\Bridge\Service\Import\IdTranslatorInterface;
 use Powerbody\Bridge\Entity\Attribute\Repository as AttributeRepository;
-use Powerbody\Manufacturer\Service\Manufacturer\ProductServiceInterface;
+use Powerbody\Manufacturer\Service\Manufacturer\ProductService; //ADVOX
 
 class ProductCreator implements ProductCreatorInterface
 {
@@ -65,7 +65,7 @@ class ProductCreator implements ProductCreatorInterface
         ManufacturerRepositoryInterface $manufacturerRepository,
         AttributeRepository $attributeRepository,
         ManufacturerResourceModel $manufacturerResourceModel,
-       // ProductServiceInterface $productService,
+        ProductService $productService,//ADVOX czy będzie działał produkt lokalny?
         array $attributes
     ) {
         $this->productFactory = $productFactory;
@@ -80,7 +80,7 @@ class ProductCreator implements ProductCreatorInterface
         $this->categoryIdTranslator = $categoryIdTranslator;
         $this->manufacturerIdTranslator = $manufacturerIdTranslator;
         $this->manufacturerResourceModel = $manufacturerResourceModel;
-       // $this->productService = $productService;
+        $this->productService = $productService;
         $this->attributes = $attributes;
     }
 
@@ -167,17 +167,15 @@ class ProductCreator implements ProductCreatorInterface
         foreach ($childrenArray as $childSku) {
             try {
                 $childProductModel = $this->productRepository->get($childSku, false, null, true);
-                $attributeExists = false;
                 foreach ($mappedAttributes as $attributeCode) {
                     if ($childProductModel->getData($attributeCode) != null) {
-                        $attributeExists = true;
+                        $childProducts[] = $childProductModel;
+                        break;
                     }
                 }
-                if (true === $attributeExists) {
-                    $childProducts[] = $childProductModel;
-                }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
             }
+        }
 
         return $childProducts;
     }

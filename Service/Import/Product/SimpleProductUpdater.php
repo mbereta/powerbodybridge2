@@ -15,12 +15,12 @@ use Powerbody\Bridge\Model\ResourceModel\Imported\ManufacturerRepositoryInterfac
 use Powerbody\Bridge\Service\ImageFileNotFoundException;
 use Powerbody\Manufacturer\Model\ResourceModel\ManufacturerRepositoryInterface;
 use Powerbody\Bridge\Service\Sync\Entity\Attribute as AttributeService;
-use Powerbody\Manufacturer\Service\Manufacturer\ProductServiceInterface;
+use Powerbody\Manufacturer\Service\Manufacturer\ProductService;
 use Powerbody\Bridge\Service\ImageDownloaderInterface;
-use \Powerbody\Manufacturer\Model\Manufacturer;
-use \Powerbody\Manufacturer\Model\ResourceModel\Manufacturer as ManufacturerResourceModel;
-use \Magento\Catalog\Model\Product\Visibility;
-use \Magento\Catalog\Api\ProductRepositoryInterface;
+use Powerbody\Manufacturer\Model\Manufacturer;
+use Powerbody\Manufacturer\Model\ResourceModel\Manufacturer as ManufacturerResourceModel;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Powerbody\Bridge\Service\Import\IdTranslatorInterface;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
@@ -76,7 +76,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         ImportedManufacturerRepositoryInterface $importedManufacturerRepository,
         ManufacturerRepositoryInterface $manufacturerRepository,
         AttributeService $attributeService,
-       // ProductServiceInterface $productService,
+        ProductService $productService,
         StoreManagerInterface $storeManager,
         ImageDownloaderInterface $imageDownloader,
         ProductRepositoryInterface $productRepository,
@@ -95,7 +95,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $this->importedManufacturerRepository = $importedManufacturerRepository;
         $this->manufacturerRepository = $manufacturerRepository;
         $this->attributeService = $attributeService;
-     //   $this->productService = $productService;
+        $this->productService = $productService;
         $this->storeManager = $storeManager;
         $this->imageDownloader = $imageDownloader;
         $this->productRepository = $productRepository;

@@ -50,4 +50,13 @@ class ConfigurationReader implements ConfigurationReaderInterface
         return (string) $this->scopeConfig->getValue('ppb_ingredients/labels/watermark_image');
     }
 
+    public function getHttpAuthLogin(): string
+    {
+        return (string) $this->scopeConfig->getValue('ws_settings/general/api_wsdl_http_auth_login');
+    }
+
+    public function getHttpAuthPassword(): string
+    {
+        return (string) $this->scopeConfig->getValue('ws_settings/general/api_wsdl_http_auth_password');
+    }
 }

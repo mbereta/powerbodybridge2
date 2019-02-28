@@ -8,6 +8,7 @@
             <tab>powerbody_bridge_config</tab>
             <resource>Powerbody_Bridge::config</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Connection configuration</label>
                 <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -32,6 +33,18 @@
                         <field id="*/*/enabled">1</field>
                     </depends>
                     <validate>validate-no-empty</validate>
+                </field>
+                <field id="api_wsdl_http_auth_login" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API WSDL HTTP Authorization login</label>
+                    <depends>
+                        <field id="*/*/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="api_wsdl_http_auth_password" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API WSDL HTTP Authoriation password</label>
+                    <depends>
+                        <field id="*/*/enabled">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

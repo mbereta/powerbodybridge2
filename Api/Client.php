@@ -37,8 +37,19 @@ class Client implements ClientInterface
 
     public function call(string $method, array $params = null) : array
     {
+        $httpAuthLogin = $this->configurationReader->getHttpAuthLogin();
+        $httpAuthPassword = $this->configurationReader->getHttpAuthPassword();
+        $options = array();
+        if ((!empty($httpAuthLogin)) && (!empty($httpAuthPassword))) {
+            $options['login'] = $httpAuthLogin;
+            $options['password'] = $httpAuthPassword;
+        }
+
         if (null === $this->soapClient) {
-            $this->soapClient = $this->clientFactory->create($this->configurationReader->getWsdlUrl());
+            $this->soapClient = $this->clientFactory->create(
+                $this->configurationReader->getWsdlUrl(),
+                $options
+            );
         }
 
         if (null !== $params) {

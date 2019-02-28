@@ -30,6 +30,10 @@ class Attribute
     private $mappedAttributesArray;
 
     private $repository;
+    /**
+     * @var \Magento\Eav\Setup\EavSetupFactory
+     */
+    private $eavSetupFactory;
 
     public function __construct(
         ClientInterface $client,
@@ -38,7 +42,8 @@ class Attribute
         EavEntityAttributeOption $eavEntityAttributeOption,
         AttributeOptionLabelInterface $attributeOptionLabelInterface,
         AttributeOptionManagementInterface $attributeOptionManagementInterface,
-        Repository $repository
+        Repository $repository,
+        \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory//ADVOX
     ) {
         $this->attributeOptionLabelInterface = $attributeOptionLabelInterface;
         $this->attributeOptionManagementInterface = $attributeOptionManagementInterface;
@@ -47,6 +52,7 @@ class Attribute
         $this->eavEntityAttribute = $eavEntityAttribute;
         $this->eavEntityAttributeOption = $eavEntityAttributeOption;
         $this->repository = $repository;
+        $this->eavSetupFactory = $eavSetupFactory;//ADVOX
     }
 
     public function updateAttributes()
@@ -59,16 +65,31 @@ class Attribute
         }
 
         foreach ($attributesArray as $attributeCode => $attributesOptionsArray) {
-            $this->processAttributeOptions(
+             $this->processAttributeOptions(
                 $this->mappedAttributesArray[$attributeCode],
                 $attributesOptionsArray
             );
         }
     }
 
-    public function saveAttributeOption(string $attributeCode, string $attributeOptionValue)
+    public function saveAttributeOption(string $attributeId, string $attributeOptionValue)
     {
-        $this->attributeOptionLabelInterface->setStoreId(0);
+//ADVOX - oryginał nie zapisywał wszytkich opcji
+
+        $options = [
+            'attribute_id' => $attributeId,
+            'value' => [
+                0 => [
+                    '0' => $attributeOptionValue
+                ]
+            ]
+        ];
+        $eavSetup = $this->eavSetupFactory->create();
+        $eavSetup->addAttributeOption($options);
+
+
+
+     /*   $this->attributeOptionLabelInterface->setStoreId(0);
         $this->attributeOptionLabelInterface->setLabel($attributeOptionValue);
         $this->eavEntityAttributeOption->setLabel($attributeOptionValue);
         $this->eavEntityAttributeOption->setStoreLabels([$this->attributeOptionLabelInterface]);
@@ -79,6 +100,9 @@ class Attribute
             $attributeCode,
             $this->eavEntityAttributeOption
         );
+
+        */
+
     }
 
     private function checkIfAttributeOptionExists(string $attributeId, string $attributeOptionValue) : bool
@@ -120,9 +144,13 @@ class Attribute
     {
         if (true === isset($attributeOption['value']) && false === empty($attributeOption['value'])) {
             $attributeOptionValue = $attributeOption['label'];
-            $option = $this->checkIfAttributeOptionExists($attribute->getId(), $attributeOptionValue);
-            if (false === $option) {
-                $this->saveAttributeOption($attribute['attribute_code'], $attributeOptionValue);
+            $optionExists = $this->checkIfAttributeOptionExists($attribute->getId(), $attributeOptionValue);
+
+            // ADVOX tu powinno być przypisywanie opcji do atrybutu
+
+            if (false === $optionExists) {
+              //  $this->saveAttributeOption($attribute['attribute_code'], $attributeOptionValue); ADVOX
+                $this->saveAttributeOption($attribute->getId(), $attributeOptionValue);
             }
         }   
     }

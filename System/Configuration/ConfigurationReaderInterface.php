@@ -19,4 +19,7 @@ interface ConfigurationReaderInterface
     
     public function getIngredientLabelWatermarkImage() : string;
 
+    public function getHttpAuthLogin() : string;
+
+    public function getHttpAuthPassword() : string;
 }
