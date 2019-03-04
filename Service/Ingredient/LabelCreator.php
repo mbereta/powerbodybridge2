@@ -86,7 +86,6 @@ class LabelCreator implements LabelCreatorInterface
             $this->logger->critical($e);
         }
     }
-    
     private function saveLabel(array $labelData)
     {
         /** @var \Powerbody\Ingredients\Model\Ingredient\Label $label */

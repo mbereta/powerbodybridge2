@@ -55,6 +55,10 @@ class SimpleProductImporter implements SimpleProductImporterInterface
 
     public function processImport(array $productsDataArray)
     {
+
+        $c = count($productsDataArray);
+        $i =1;
+
         foreach($productsDataArray as $productDataArray) {
 
             try {
@@ -67,6 +71,8 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 $productModel = $this->getProductModelBySku($productDataArray['sku']);
                 $this->simpleProductUpdater->createOrUpdate($productModel, $productDataArray);
                 $this->dbConnection->commit();
+
+                $this->logger->info("Zapisano produkt prosty: " . $i++ ." z ". $c . " o id=" . $productModel->getId());
             } catch (\Exception $e) {
                 $this->dbConnection->rollBack();
                 $this->logger->debug($e->getMessage());
@@ -85,8 +91,10 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 ->setStoreId($storeModel->getId())
                 ->getCollection();
             $productCollection->addFieldToFilter('type_id', \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE);
+
             if (false === empty($productSkuArray)) {
                 $productCollection->addFieldToFilter('sku', ['nin' => $productSkuArray]);
+                $productCollection->addFieldToFilter('is_imported', ['eq' => 1]);
             }
 
             foreach($productCollection as $productModel) {

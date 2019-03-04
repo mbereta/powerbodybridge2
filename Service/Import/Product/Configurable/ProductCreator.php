@@ -140,6 +140,7 @@ class ProductCreator implements ProductCreatorInterface
         if (false === empty($manufacturerArray)) {
             $productModel = $this->productRepository->get($product->getData('sku'));
             foreach($manufacturerArray as $manufacturerId) {
+
                 $this->productService->createManufacturerProduct($manufacturerId, (int)$productModel->getId());
             }
         }
