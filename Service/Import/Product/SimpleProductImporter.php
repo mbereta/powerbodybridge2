@@ -97,9 +97,13 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 $productCollection->addFieldToFilter('is_imported', ['eq' => 1]);
             }
 
+            $c = $productCollection->getSize();
+            $i = 1;
+
             foreach($productCollection as $productModel) {
                 $productModel->setData('status', Status::STATUS_DISABLED);
                 $productModel->setData('website_ids', []);
+                $this->logger->info("Disable product simple o sku: ". $productModel->getSku() . ' ' .$i++. ' z '. $c);
                 $this->productRepository->save($productModel);
             }
         }
