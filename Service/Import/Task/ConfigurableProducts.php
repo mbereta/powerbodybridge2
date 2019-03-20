@@ -56,6 +56,7 @@ class ConfigurableProducts implements TaskInterface
             ->getSelectedImportedManufacturerCollection()
             ->getColumnValues('base_manufacturer_id');
 
+
         $selectedCategoryIds = $this->importedCategoryRepository
             ->getSelectedImportedCategoryCollection()
             ->getColumnValues('base_category_id');

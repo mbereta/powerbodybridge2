@@ -116,6 +116,7 @@ class ProductCreator implements ProductCreatorInterface
         $product->setExtensionAttributes($extensionConfigurableAttributes);
         $product->setName($dataArray['name']);
         $product->setSku($sku);
+        $product->setStock($dataArray['stock']);
         $product->setTaxClassId($taxClassId);
         $product->setAttributeSetId($product->getDefaultAttributeSetId());
         $product->setWebsiteIds([1]);

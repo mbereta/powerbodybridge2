@@ -25,6 +25,10 @@ use Powerbody\Bridge\Service\Import\IdTranslatorInterface;
 use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
 use Magento\UrlRewrite\Model\UrlPersistInterface;
 
+use Magento\InventoryApi\Api\SourceItemsSaveInterface;
+use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
+
+
 class SimpleProductUpdater implements SimpleProductUpdaterInterface
 {
     const PRODUCT_ATTRIBUTE_SET_ID = 4;
@@ -67,6 +71,10 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
     private $urlRewriteGenerator;
 
+    protected $_sourceItemsSaveInterface;
+
+    protected $_sourceItemFactory;
+
     public function __construct(
         ImportedCategoryFactory $importedCategoryFactory,
         ImportedManufacturerFactory $importedManufacturerFactory,
@@ -85,7 +93,9 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         IdTranslatorInterface $categoryIdTranslator,
         IdTranslatorInterface $manufacturerIdTranslator,
         UrlPersistInterface $urlPersist,
-        ProductUrlRewriteGenerator $urlRewriteGenerator
+        ProductUrlRewriteGenerator $urlRewriteGenerator,
+        SourceItemsSaveInterface $sourceItemsSaveInterface,
+        SourceItemInterfaceFactory $sourceItemFactory
     ) {
         $this->importedCategoryFactory = $importedCategoryFactory;
         $this->importedManufacturerFactory = $importedManufacturerFactory;
@@ -105,6 +115,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $this->manufacturerIdTranslator = $manufacturerIdTranslator;
         $this->urlPersist = $urlPersist;
         $this->urlRewriteGenerator = $urlRewriteGenerator;
+        $this->_sourceItemsSaveInterface = $sourceItemsSaveInterface;
+        $this->_sourceItemFactory = $sourceItemFactory;
     }
 
     public function createOrUpdate(Product $productModel, array $productDataArray)
@@ -180,8 +192,28 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $this->productResourceModel->save($productModel);
 
         $this->updateStockItemForProductBySku($sku, $stockDataArray);
+        $this->updateSourcesItemForProductBySku($productModel, $stockDataArray);
         $this->updateManufacturerDataForProduct($productModel, $productDataArray['manufacturers']);
         $this->updateAdminStoreView($productModel, $imageAttributes);
+    }
+
+    private function updateSourcesItemForProductBySku(Product $productModel, array $stockDataArray){
+
+        $this->updateSourceItemForProductBySku($productModel->getSku(),(float)$stockDataArray['qty'], 'pb');
+
+        if ('Stock local' != $productModel->getAttributeText('stock')) {
+                $this->updateSourceItemForProductBySku($productModel->getSku(),(float)$stockDataArray['qty'], 'local');
+        }
+
+    }
+
+    private function updateSourceItemForProductBySku(string $sku, float $qty, string $code = 'pb'){
+        $sourceItem = $this->_sourceItemFactory->create();
+        $sourceItem->setSourceCode($code);
+        $sourceItem->setSku($sku);
+        $sourceItem->setQuantity((float)$qty);
+        $sourceItem->setStatus(1);
+        $this->_sourceItemsSaveInterface->execute([$sourceItem]);
     }
 
     private function updateAdminStoreView(Product $productModel, array $imageAttributes)

@@ -48,17 +48,23 @@ class ProductImporter implements ProductImporterInterface
 
     public function processImport(array $productsDataArray)
     {
-        $c = count($productsDataArray);
-        $i=1;
+        $productsCount = count($productsDataArray);
+        $currentIndex=1;
+
 
         foreach($productsDataArray as $productDataArray) {
             try {
                 $this->dbConnection->beginTransaction();
+                if(empty($productDataArray['stock'])){
+                    $productDataArray['stock']='pb';
+                }
                 $this->productCreator->create($productDataArray);
+
                 $this->dbConnection->commit();
-                $this->logger->info("Zapisano produkt konfigurowalny: " . $i++ ." z ". $c . " " . $productDataArray['entity_id']);
+                $this->logger->info("Saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id']);
             } catch (\Exception $e) {
                 $this->dbConnection->rollBack();
+                $this->logger->info("Cannot saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id']);
                 $this->logger->debug(__('Transaction for product has been rolled back') . ': ' . $productDataArray['sku']);
                 $this->logger->debug($e->getMessage(), ['trace' => $e->getTraceAsString(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             }
@@ -77,19 +83,23 @@ class ProductImporter implements ProductImporterInterface
             $productCollection->addFieldToFilter('is_imported',['eq'=>1]);
         }
 
-        $c = $productCollection->getSize();
-        $i = 1;
+        $productsCount = $productCollection->getSize();
+        $currentIndex = 1;
+
+        $this->logger->info("Disabling configurable products: ");
+
         foreach($productCollection as $productModel) {
             /* @var \Magento\Catalog\Model\Product $productModel */
-            $productModel->setData('status', Status::STATUS_DISABLED);
-            $productModel->setData('website_ids', []);
-            $this->productRepository->save($productModel);
-            $productModel->setStoreId(0);
 
-            $this->logger->info("Disable produkt konfigurowalny: " . $i++ ." z ". $c . "  o id=" . $productModel->getId());
-
-            $this->productRepository->save($productModel);
-            $this->urlPersist->deleteByData([UrlRewrite::ENTITY_ID => $productModel->getId()]);
+            if($productModel->getData('status') == Status::STATUS_ENABLED) {
+                $productModel->setData('status', Status::STATUS_DISABLED);
+                $productModel->setData('website_ids', []);
+                $this->productRepository->save($productModel);
+                $productModel->setStoreId(0);
+                $this->logger->info("Disable configurable product: " . $currentIndex++ . " from " . $productsCount . "  with id=" . $productModel->getId());
+                $this->productRepository->save($productModel);
+                $this->urlPersist->deleteByData([UrlRewrite::ENTITY_ID => $productModel->getId()]);
+            }
         }
     }
 }

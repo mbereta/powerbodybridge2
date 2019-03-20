@@ -61,11 +61,14 @@ class SimpleProduct implements TaskInterface
             return $this;
         }
 
+
+
         $this->simpleProductImporter->disableNotRequestedProducts($productSkuArray);
 
         $productSkuArray = $this->productDataComparator->compareResponseDataWithExisting($productSkuArray);
 
         $productDataArray = $this->simpleProductRepository->getProductDataForSkuArray($productSkuArray);
+
 
         if (false === empty($productDataArray)) {
             $this->simpleProductImporter->processImport($productDataArray);

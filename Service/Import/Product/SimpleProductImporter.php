@@ -56,8 +56,8 @@ class SimpleProductImporter implements SimpleProductImporterInterface
     public function processImport(array $productsDataArray)
     {
 
-        $c = count($productsDataArray);
-        $i =1;
+        $productsCount = count($productsDataArray);
+        $currentIndex = 1;
 
         foreach($productsDataArray as $productDataArray) {
 
@@ -72,7 +72,7 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 $this->simpleProductUpdater->createOrUpdate($productModel, $productDataArray);
                 $this->dbConnection->commit();
 
-                $this->logger->info("Zapisano produkt prosty: " . $i++ ." z ". $c . " o id=" . $productModel->getId());
+                $this->logger->info("Saved simple product: " . $currentIndex++ ." z ". $productsCount . " with id=" . $productModel->getId());
             } catch (\Exception $e) {
                 $this->dbConnection->rollBack();
                 $this->logger->debug($e->getMessage());
@@ -97,14 +97,20 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 $productCollection->addFieldToFilter('is_imported', ['eq' => 1]);
             }
 
-            $c = $productCollection->getSize();
-            $i = 1;
+            $productsCount = $productCollection->getSize();
+            $currentIndex = 1;
+
+            $this->logger->info("Disable simples: ");
 
             foreach($productCollection as $productModel) {
-                $productModel->setData('status', Status::STATUS_DISABLED);
-                $productModel->setData('website_ids', []);
-                $this->logger->info("Disable product simple o sku: ". $productModel->getSku() . ' ' .$i++. ' z '. $c);
-                $this->productRepository->save($productModel);
+
+                if ($productModel->getData('status') == Status::STATUS_ENABLED){
+                    $productModel->setData('status', Status::STATUS_DISABLED);
+                    $productModel->setData('website_ids', []);
+                    $productModel->setStock('pb');
+                    $this->logger->info("Disable product simple o sku: ". $productModel->getSku() . ' ' .$currentIndex++. ' from '. $productsCount);
+                    $this->productRepository->save($productModel);
+                }
             }
         }
     }
