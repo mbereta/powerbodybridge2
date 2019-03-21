@@ -156,15 +156,24 @@ class OrderService implements OrderServiceInterface
 
         /* @var \Magento\Sales\Model\Order\Item $item */
         foreach ($order->getAllVisibleItems() as $item) {
-            $items[] = [
-                'product_id' => $item->getData('product_id'),
-                'name' => $item->getData('name'),
-                'sku' => $item->getData('sku'),
-                'qty' => $item->getData('qty_ordered'),
-                'price' => $item->getData('price_incl_tax'),
-                'currency' => $order->getData('order_currency_code'),
-                'tax' => $item->getData('tax_percent'),
-            ];
+
+            $productOptions = $item->getProductOptions();
+            $stock = $productOptions['stock'];
+
+            if(!is_null($item->getProduct()->getData('is_imported'))
+                && "Stock PB" == $stock
+            ){
+                $items[] = [
+                    'product_id' => $item->getData('product_id'),
+                    'name' => $item->getData('name'),
+                    'sku' => $item->getData('sku'),
+                    'qty' => $item->getData('qty_ordered'),
+                    'price' => $item->getData('price_incl_tax'),
+                    'currency' => $order->getData('order_currency_code'),
+                    'tax' => $item->getData('tax_percent'),
+                ];
+            }
+
         }
 
         return $items;
