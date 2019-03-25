@@ -263,7 +263,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
     private function createManufacturerAttributeOption(string $attributeCode, string $manufacturerName) : string
     {
-        $this->attributeService->saveAttributeOption($attributeCode, $manufacturerName);
+        $this->attributeService->saveAttributeOptionByCode($attributeCode, $manufacturerName);
+
 
         return $this->attributeRepository
             ->getAttributeOptionIdByAttributeCodeAndValue('manufacturer', $manufacturerName);

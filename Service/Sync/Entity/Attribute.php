@@ -43,7 +43,7 @@ class Attribute
         AttributeOptionLabelInterface $attributeOptionLabelInterface,
         AttributeOptionManagementInterface $attributeOptionManagementInterface,
         Repository $repository,
-        \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory
+        \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory//ADVOX
     ) {
         $this->attributeOptionLabelInterface = $attributeOptionLabelInterface;
         $this->attributeOptionManagementInterface = $attributeOptionManagementInterface;
@@ -52,7 +52,7 @@ class Attribute
         $this->eavEntityAttribute = $eavEntityAttribute;
         $this->eavEntityAttributeOption = $eavEntityAttributeOption;
         $this->repository = $repository;
-        $this->eavSetupFactory = $eavSetupFactory;
+        $this->eavSetupFactory = $eavSetupFactory;//ADVOX
     }
 
     public function updateAttributes()
@@ -74,7 +74,6 @@ class Attribute
 
     public function saveAttributeOption(string $attributeId, string $attributeOptionValue)
     {
-
         $options = [
             'attribute_id' => $attributeId,
             'value' => [
@@ -86,6 +85,21 @@ class Attribute
         $eavSetup = $this->eavSetupFactory->create();
         $eavSetup->addAttributeOption($options);
 
+    }
+
+    public function saveAttributeOptionByCode(string $attributeCode, string $attributeOptionValue)
+    {
+        $this->attributeOptionLabelInterface->setStoreId(0);
+        $this->attributeOptionLabelInterface->setLabel($attributeOptionValue);
+        $this->eavEntityAttributeOption->setLabel($attributeOptionValue);
+        $this->eavEntityAttributeOption->setStoreLabels([$this->attributeOptionLabelInterface]);
+        $this->eavEntityAttributeOption->setSortOrder(0);
+        $this->eavEntityAttributeOption->setIsDefault(false);
+        $optionId = $this->attributeOptionManagementInterface->add(
+            \Magento\Catalog\Model\Product::ENTITY,
+            $attributeCode,
+            $this->eavEntityAttributeOption
+        );
     }
 
     private function checkIfAttributeOptionExists(string $attributeId, string $attributeOptionValue) : bool
@@ -129,7 +143,10 @@ class Attribute
             $attributeOptionValue = $attributeOption['label'];
             $optionExists = $this->checkIfAttributeOptionExists($attribute->getId(), $attributeOptionValue);
 
+            // ADVOX tu powinno być przypisywanie opcji do atrybutu
+
             if (false === $optionExists) {
+              //  $this->saveAttributeOption($attribute['attribute_code'], $attributeOptionValue);
                 $this->saveAttributeOption($attribute->getId(), $attributeOptionValue);
             }
         }   

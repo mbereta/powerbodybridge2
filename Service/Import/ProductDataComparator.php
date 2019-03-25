@@ -36,10 +36,10 @@ class ProductDataComparator implements ProductDataComparatorInterface
             $productImportUpdatedAt = $productModel->getData('import_updated_at');
             $webserviceProductUpdatedAt = $responseData[$sku];
             $skuArrayPosition = array_search($sku, $skuArray);
-
-            if ($productImportUpdatedAt >= $webserviceProductUpdatedAt) {
+//ADVOX
+            /*if ($productImportUpdatedAt >= $webserviceProductUpdatedAt) {
                 unset($skuArray[$skuArrayPosition]);
-            }
+            }*/
 
             if ((int)$productModel->getData('status') === Status::STATUS_DISABLED) {
                 $skuArray[] = $productModel->getData('sku');
