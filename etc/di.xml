@@ -148,6 +148,7 @@
                 <item name="powerbodybridge_fix_descriptions" xsi:type="object">Powerbody\Bridge\Console\Command\FixDescriptionsCommand</item>
                 <item name="powerbodybridge_reset_cron" xsi:type="object">Powerbody\Bridge\Console\Command\ResetCronCommand</item>
                 <item name="powerbodybridge_start_product_import" xsi:type="object">Powerbody\Bridge\Console\Command\StartProductImport</item>
+                <item name="powerbodybridge_start_order_export" xsi:type="object">Powerbody\Bridge\Console\Command\StartOrderExport</item>
             </argument>
         </arguments>
     </type>
