@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.0",
-        "mbereta/manufacturer": "^1.3.4",
+        "mbereta/manufacturer": "^1.3.5",
         "advox/ingredients": "^1.1.0"
     },
     "autoload": {
