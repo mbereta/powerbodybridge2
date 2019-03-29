@@ -166,8 +166,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
                 'website_ids' => $this->getImportProductWebsiteIds(),
                 'status' => (int)$productDataArray['status'],
             ]);
-        
-        if (false === @getimagesize($productModel->getData('image_url'))) {
+
+        if (is_null($productModel->getData('image_url')) || false === @getimagesize($productModel->getData('image_url'))) {
             $productModel->addData(['image_url' => null]);
         }
 
@@ -180,9 +180,9 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         if (true === $isNew || true === $isUpdatedWhileImport) {
             $this->downloadImageForProduct($productModel);
         }
-
-        $productModel->setUrlKey($productModel->formatUrlKey($sku . '-' . $productDataArray['name']));
-
+        if(isset($productDataArray['name'])) {
+            $productModel->setUrlKey($productModel->formatUrlKey($sku . '-' . $productDataArray['name']));
+        }
         $imageAttributes = [
             'image' => $productModel->getData('image'),
             'small_image' => $productModel->getData('small_image'),

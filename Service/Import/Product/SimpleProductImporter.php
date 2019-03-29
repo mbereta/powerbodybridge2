@@ -75,6 +75,7 @@ class SimpleProductImporter implements SimpleProductImporterInterface
                 $this->logger->info("Saved simple product: " . $currentIndex++ ." z ". $productsCount . " with id=" . $productModel->getId());
             } catch (\Exception $e) {
                 $this->dbConnection->rollBack();
+                $this->logger->info("Cannot save simple product: " . $currentIndex++ ." z ". $productsCount . " with id=" . $productModel->getId());
                 $this->logger->debug($e->getMessage());
             }
         }
