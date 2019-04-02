@@ -52,6 +52,7 @@
                 <item name="2" xsi:type="string">powerbody_weight</item>
                 <item name="3" xsi:type="string">powerbody_flavour</item>
                 <item name="4" xsi:type="string">powerbody_size</item>
+                <item name="5" xsi:type="string">powerbody_mixed_weight</item>
             </argument>
         </arguments>
     </type>

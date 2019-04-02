@@ -61,10 +61,10 @@ class ProductImporter implements ProductImporterInterface
                 $this->productCreator->create($productDataArray);
 
                 $this->dbConnection->commit();
-                $this->logger->info("Saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id']);
+                $this->logger->info("Saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id'] . ' '.$productDataArray['sku']);
             } catch (\Exception $e) {
                 $this->dbConnection->rollBack();
-                $this->logger->info("Cannot saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id']);
+                $this->logger->info("Cannot saved configurable product: " . $currentIndex++ ." from ". $productsCount . " " . $productDataArray['entity_id'] .' '.$productDataArray['sku']);
                 $this->logger->debug(__('Transaction for product has been rolled back') . ': ' . $productDataArray['sku']);
                 $this->logger->debug($e->getMessage(), ['trace' => $e->getTraceAsString(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             }
