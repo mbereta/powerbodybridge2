@@ -191,8 +191,11 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
         $this->productResourceModel->save($productModel);
 
-        $this->updateStockItemForProductBySku($sku, $stockDataArray);
-        $this->updateSourcesItemForProductBySku($productModel, $stockDataArray);
+        if (true === $isNew || true === $isUpdatedWhileImport) {
+            $this->updateStockItemForProductBySku($sku, $stockDataArray);
+            $this->updateSourcesItemForProductBySku($productModel, $stockDataArray);
+        }
+
         $this->updateManufacturerDataForProduct($productModel, $productDataArray['manufacturers']);
         $this->updateAdminStoreView($productModel, $imageAttributes);
     }
