@@ -215,6 +215,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $sourceItem->setSourceCode($code);
         $sourceItem->setSku($sku);
         $sourceItem->setQuantity((float)$qty);
+        $sourceItem->setIsInStock($qty > 0);
         $sourceItem->setStatus(1);
         $this->_sourceItemsSaveInterface->execute([$sourceItem]);
     }

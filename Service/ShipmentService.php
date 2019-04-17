@@ -27,7 +27,7 @@ class ShipmentService implements ShipmentServiceInterface
         $this->trackService = $trackService;
     }
     
-    public function createOrUpdate(\Magento\Sales\Model\Order $order, array $orderData) : \Magento\Sales\Model\Order\Shipment
+    public function createOrUpdate(\Magento\Sales\Model\Order $order, array $orderData) :? \Magento\Sales\Model\Order\Shipment
     {
         /** @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Collection $shipmentsCollection */
         $shipmentsCollection = $order->getShipmentsCollection();
@@ -42,15 +42,18 @@ class ShipmentService implements ShipmentServiceInterface
         }
         
         /** @var \Magento\Sales\Model\ResourceModel\Order\Shipment\Track $track */
-        $track = $this->trackService->createOrUpdate($shipment, $orderData);
-        
-        $shipment->addTrack($track)
-            ->save();
-        
-        return $shipment;
+
+        if(!is_null($shipment)) {
+            $track = $this->trackService->createOrUpdate($shipment, $orderData);
+
+            $shipment->addTrack($track)
+                ->save();
+        }
+            return $shipment;
+
     }
     
-    private function createNewShipment(\Magento\Sales\Model\Order $order) : \Magento\Sales\Model\Order\Shipment
+    private function createNewShipment(\Magento\Sales\Model\Order $order) : ?\Magento\Sales\Model\Order\Shipment
     {
         if (false === $order->canShip()) {
             throw new \Exception('Order shipping not available');
@@ -58,24 +61,42 @@ class ShipmentService implements ShipmentServiceInterface
         
         /** @var \Magento\Sales\Model\Order\Shipment $shipment */
         $shipment = $this->convertOrder->toShipment($order);
-        
-        /** @var \Magento\Sales\Model\Order\Item $orderItem */
+
+        $createOrder = false;
+
         foreach ($order->getAllItems() AS $orderItem) {
-            if (0 === $orderItem->getQtyToShip() || true === $orderItem->getIsVirtual()) {
-                continue;
+
+            $productOptions = $orderItem->getProductOptions();
+            $stock = $productOptions['stock'];
+
+            $product = $orderItem->getProduct();
+
+            if(!is_null($product) && !is_null($product->getData('is_imported'))
+                && "Stock PB" == $stock
+            ) {
+
+                if (0 === $orderItem->getQtyToShip() || true === $orderItem->getIsVirtual()) {
+                    continue;
+                }
+
+                $qtyShipped = $orderItem->getQtyToShip();
+                $shipmentItem = $this->convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
+
+                $shipment->addItem($shipmentItem);
+                $createOrder = true;
             }
-            
-            $qtyShipped = $orderItem->getQtyToShip();
-            $shipmentItem = $this->convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
-            
-            $shipment->addItem($shipmentItem);
+
         }
-        
-        $shipment->register();
-        
-        $this->shipmentResource->save($shipment);
-        
-        return $shipment;
+
+        if ($createOrder) {
+            $shipment->register();
+
+            $this->shipmentResource->save($shipment);
+
+            return $shipment;
+        }else{
+            return null;
+        }
     }
     
 }

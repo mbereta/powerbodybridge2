@@ -160,7 +160,9 @@ class OrderService implements OrderServiceInterface
             $productOptions = $item->getProductOptions();
             $stock = $productOptions['stock'];
 
-            if(!is_null($item->getProduct()->getData('is_imported'))
+            $product = $item->getProduct();
+
+            if(!is_null($product) && !is_null($product->getData('is_imported'))
                 && "Stock PB" == $stock
             ){
                 $items[] = [
