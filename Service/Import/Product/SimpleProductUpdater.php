@@ -28,6 +28,8 @@ use Magento\UrlRewrite\Model\UrlPersistInterface;
 use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
 
+use Magento\Eav\Model\Config;
+use Powerbody\Bridgeextension\Helper\InventorySource;
 
 class SimpleProductUpdater implements SimpleProductUpdaterInterface
 {
@@ -71,9 +73,14 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
     private $urlRewriteGenerator;
 
+    protected $attributeStockPbId;
+
+
     protected $_sourceItemsSaveInterface;
 
     protected $_sourceItemFactory;
+
+    protected $_config;
 
     public function __construct(
         ImportedCategoryFactory $importedCategoryFactory,
@@ -95,7 +102,8 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         UrlPersistInterface $urlPersist,
         ProductUrlRewriteGenerator $urlRewriteGenerator,
         SourceItemsSaveInterface $sourceItemsSaveInterface,
-        SourceItemInterfaceFactory $sourceItemFactory
+        SourceItemInterfaceFactory $sourceItemFactory,
+        Config $config
     ) {
         $this->importedCategoryFactory = $importedCategoryFactory;
         $this->importedManufacturerFactory = $importedManufacturerFactory;
@@ -117,6 +125,7 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
         $this->urlRewriteGenerator = $urlRewriteGenerator;
         $this->_sourceItemsSaveInterface = $sourceItemsSaveInterface;
         $this->_sourceItemFactory = $sourceItemFactory;
+        $this->_config = $config;
     }
 
     public function createOrUpdate(Product $productModel, array $productDataArray)
@@ -173,6 +182,10 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
         if (true === $isNew) {
             $productModel->addData(['is_updated_while_import' => true]);
+
+            $id = $this->getAttributeStockPbId();
+
+            $productModel->addData(['stock' => $id]);
         }
 
         $this->processManufacturerAttribute($productModel, $productDataArray['manufacturers']);
@@ -198,6 +211,25 @@ class SimpleProductUpdater implements SimpleProductUpdaterInterface
 
         $this->updateManufacturerDataForProduct($productModel, $productDataArray['manufacturers']);
         $this->updateAdminStoreView($productModel, $imageAttributes);
+    }
+
+
+    private function getAttributeStockPbId()
+    {
+
+        if (is_null($this->attributeStockPbId)) {
+
+            $attribute = $this->_config->getAttribute("catalog_product", 'stock');
+            $options = $attribute->getSource()->getAllOptions();
+            foreach ($options as $option) {
+                if (InventorySource::STOCK_PB_LABEL == $option['label']) {
+                    $this->attributeStockPbId = $option['value'];
+                    break;
+                }
+            }
+        }
+
+        return $this->attributeStockPbId;
     }
 
     private function updateSourcesItemForProductBySku(Product $productModel, array $stockDataArray){
